@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+    composer:
+        image: library/composer
+        volumes:
+            - $PWD:/app
+
+    php:
+        image: bakabot/php-dev
+        volumes:
+            - $PWD:/app

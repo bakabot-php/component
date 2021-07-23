@@ -1,0 +1,10 @@
+language: minimal
+
+services:
+    - docker
+
+before_script:
+    - docker-compose pull
+
+script:
+    - make ci

@@ -1,0 +1,34 @@
+{
+    "name": "bakabot/component",
+    "description": "Provides the base classes and interfaces for Bakabot components.",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "acclimate/container": "^2"
+    },
+    "require-dev": {
+        "bakabot/development": "^2.0",
+        "php-di/php-di": "^6",
+        "roave/security-advisories": "dev-latest"
+    },
+    "suggest": {
+        "php-di/php-di": "Recommended default container"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bakabot\\Component\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bakabot\\Component\\": "tests/"
+        }
+    },
+    "config": {
+        "lock": false,
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    }
+}
