@@ -4,8 +4,9 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component;
 
-use Acclimate\Container\ArrayContainer;
+use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class ComponentTest extends TestCase
 {
@@ -13,9 +14,13 @@ class ComponentTest extends TestCase
     public function registers_services_and_parameters(): void
     {
         $component = new DependencyDummy();
-        $container = $component->provideDependencies(new ArrayContainer());
+
+        $containerBuilder = new ContainerBuilder();
+        $component->register($containerBuilder);
+
+        $container = $containerBuilder->build();
 
         self::assertTrue($container->has('name'));
-        self::assertTrue($container->has('my_service'));
+        self::assertTrue($container->has(stdClass::class));
     }
 }

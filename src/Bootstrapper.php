@@ -7,6 +7,7 @@ namespace Bakabot\Component;
 use Acclimate\Container\ArrayContainer;
 use Acclimate\Container\CompositeContainer;
 use Bakabot\Component\Collection as ComponentCollection;
+use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 
 final class Bootstrapper
@@ -44,9 +45,18 @@ final class Bootstrapper
         $container = new CompositeContainer();
         $container->addContainer($this->wrappedContainer);
 
+        $containerBuilder = $container->has(ContainerBuilder::class)
+            ? $container->get(ContainerBuilder::class)
+            : new ContainerBuilder()
+        ;
+
+        $containerBuilder->wrapContainer($container);
+
         foreach ($this->components as $component) {
-            $container->addContainer($component->provideDependencies($container));
+            $component->register($containerBuilder);
         }
+
+       $container->addContainer($containerBuilder->build());
 
         foreach ($this->components as $component) {
             $component->boot($container);

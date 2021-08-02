@@ -18,7 +18,7 @@ class DependencyDummy extends AbstractComponent
     protected function getServices(): array
     {
         return [
-            'my_service' => static fn () => new stdClass(),
+            stdClass::class => static fn () => new stdClass(),
         ];
     }
 }

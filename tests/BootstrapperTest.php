@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Bakabot\Component;
 
 use Acclimate\Container\ArrayContainer;
+use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -41,6 +42,7 @@ class BootstrapperTest extends TestCase
     {
         $wrappedContainer = new ArrayContainer();
         $wrappedContainer[LoggerInterface::class] = static fn () => new NullLogger();
+        $wrappedContainer[ContainerBuilder::class] = static fn () => new ContainerBuilder();
 
         $components = [new DependentDummy()];
         $bootstrapper = new Bootstrapper($components, $wrappedContainer);

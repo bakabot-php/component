@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component;
 
+use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Stringable;
 
@@ -13,7 +14,7 @@ interface ComponentInterface extends Stringable
 
     public function boot(ContainerInterface $container): void;
 
-    public function provideDependencies(ContainerInterface $container): ContainerInterface;
+    public function register(ContainerBuilder $containerBuilder): void;
 
     public function shutdown(ContainerInterface $container): void;
 }

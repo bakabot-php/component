@@ -21,13 +21,9 @@ abstract class AbstractComponent implements ComponentInterface
 
     abstract protected function getServices(): array;
 
-    public function provideDependencies(ContainerInterface $container): ContainerInterface
+    public function register(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder = new ContainerBuilder();
-        $containerBuilder->wrapContainer($container);
         $containerBuilder->addDefinitions($this->getParameters(), $this->getServices());
-
-        return $containerBuilder->build();
     }
 
     public function shutdown(ContainerInterface $container): void

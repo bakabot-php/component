@@ -4,11 +4,11 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "acclimate/container": "^2"
+        "acclimate/container": "^2",
+        "php-di/php-di": "^6"
     },
     "require-dev": {
         "bakabot/development": "^2.0",
-        "php-di/php-di": "^6",
         "roave/security-advisories": "dev-latest"
     },
     "suggest": {
