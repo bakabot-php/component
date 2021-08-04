@@ -4,21 +4,19 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component;
 
-use DI\ContainerBuilder;
-use PHPUnit\Framework\TestCase;
 use stdClass;
 
-class ComponentTest extends TestCase
+class ComponentTest extends ComponentTestCase
 {
+    protected function getComponent(): ComponentInterface
+    {
+        return new DependencyDummy();
+    }
+
     /** @test */
     public function registers_services_and_parameters(): void
     {
-        $component = new DependencyDummy();
-
-        $containerBuilder = new ContainerBuilder();
-        $component->register($containerBuilder);
-
-        $container = $containerBuilder->build();
+        $container = $this->getContainer();
 
         self::assertTrue($container->has('name'));
         self::assertTrue($container->has(stdClass::class));
