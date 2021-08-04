@@ -10,6 +10,11 @@ use PHPUnit\Framework\TestCase;
 
 abstract class ComponentTestCase extends TestCase
 {
+    final protected function assertContainerHasEntry(string $name): void
+    {
+        self::assertTrue($this->getContainer()->has($name));
+    }
+
     abstract protected function getComponent(): ComponentInterface;
 
     /** @return ComponentInterface[] */
@@ -43,5 +48,51 @@ abstract class ComponentTestCase extends TestCase
         }
 
         return $containerBuilder;
+    }
+
+    /** @test */
+    public function registers_annotated_parameters(): void
+    {
+        $component = $this->getComponent();
+
+        if (($component instanceof AbstractComponent) === false || $component->getRegisteredParameters() === []) {
+            /** @psalm-suppress InternalMethod */
+            $this->addToAssertionCount(1);
+            return;
+        }
+
+        $container = $this->getContainer();
+
+        foreach ($component->getRegisteredParameters() as $parameter) {
+            $this->assertContainerHasEntry($parameter->getName());
+
+            self::assertSame(
+                $parameter->getType(),
+                get_debug_type($parameter->resolve($container)),
+            );
+        }
+    }
+
+    /** @test */
+    public function registers_annotated_services(): void
+    {
+        $component = $this->getComponent();
+
+        if (($component instanceof AbstractComponent) === false || $component->getRegisteredServices() === []) {
+            /** @psalm-suppress InternalMethod */
+            $this->addToAssertionCount(1);
+            return;
+        }
+
+        $container = $this->getContainer();
+
+        foreach ($component->getRegisteredServices() as $service) {
+            $this->assertContainerHasEntry($service->getName());
+
+            self::assertInstanceOf(
+                $service->getType(),
+                $service->resolve($container)
+            );
+        }
     }
 }

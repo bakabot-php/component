@@ -6,11 +6,11 @@ namespace Bakabot\Component;
 
 use stdClass;
 
-class ComponentTest extends ComponentTestCase
+class DependentDummyComponentTest extends ComponentTestCase
 {
     protected function getComponent(): ComponentInterface
     {
-        return new DependencyDummy();
+        return new DependentDummy();
     }
 
     /** @test */
