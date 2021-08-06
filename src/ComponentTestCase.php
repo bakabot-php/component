@@ -10,9 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 abstract class ComponentTestCase extends TestCase
 {
-    final protected function assertContainerHasEntry(string $name): void
+    final protected function assertContainerHasEntry(string $name, string $message = ''): void
     {
-        self::assertTrue($this->getContainer()->has($name));
+        self::assertTrue($this->getContainer()->has($name), $message);
     }
 
     abstract protected function getComponent(): ComponentInterface;
@@ -87,7 +87,14 @@ abstract class ComponentTestCase extends TestCase
         $container = $this->getContainer();
 
         foreach ($component->getRegisteredServices() as $service) {
-            $this->assertContainerHasEntry($service->getName());
+            $this->assertContainerHasEntry(
+                $service->getType(),
+                sprintf('[%s] is not registered in the container', $service->getType())
+            );
+
+            foreach ($service->getAliases() as $alias) {
+                $this->assertContainerHasEntry($alias, "[$alias] is not registered in the container");
+            }
 
             self::assertInstanceOf(
                 $service->getType(),

@@ -10,8 +10,9 @@ use Psr\Container\ContainerInterface;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class RegistersService
 {
+    /** @var string[] */
+    private array $aliases;
     private string $description;
-    private string $name;
     /** @var class-string */
     private string $type;
 
@@ -20,24 +21,25 @@ final class RegistersService
 
     /**
      * @param class-string $type
-     * @param string|null $name
+     * @param string|string[] $aliases
      * @param string $description
      */
-    public function __construct(string $type, ?string $name = null, string $description = self::DEFAULT_DESCRIPTION)
+    public function __construct(string $type, string|array $aliases = [], string $description = self::DEFAULT_DESCRIPTION)
     {
+        $this->aliases = (array) $aliases;
         $this->description = $description;
-        $this->name = $name ?? $type;
         $this->type = $type;
+    }
+
+    /** @return string[] */
+    public function getAliases(): array
+    {
+        return $this->aliases;
     }
 
     public function getDescription(): string
     {
         return $this->description;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     /** @return class-string */
@@ -48,13 +50,16 @@ final class RegistersService
 
     public function resolve(ContainerInterface $container): object
     {
-        return $container->get($this->name);
+        $service = $container->get($this->type);
+        assert(is_object($service));
+
+        return $service;
     }
 
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
+            'aliases' => $this->aliases,
             'type' => $this->type,
             'description' => $this->description,
         ];

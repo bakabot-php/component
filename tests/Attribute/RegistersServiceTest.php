@@ -15,7 +15,7 @@ class RegistersServiceTest extends TestCase
         $attr = new RegistersService(stdClass::class);
 
         $asArray = [
-            'name' => $attr->getName(),
+            'aliases' => $attr->getAliases(),
             'type' => $attr->getType(),
             'description' => $attr->getDescription(),
         ];

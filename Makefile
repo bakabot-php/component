@@ -11,7 +11,7 @@ csfix: vendor
 	docker-compose run --rm php vendor/bin/php-cs-fixer fix
 
 psalm: vendor
-	docker-compose run --rm php vendor/bin/psalm --shepherd
+	docker-compose run --rm php vendor/bin/psalm --show-info=true
 
 tests: vendor
 	docker-compose run --rm php -dxdebug.mode=coverage vendor/bin/phpunit
