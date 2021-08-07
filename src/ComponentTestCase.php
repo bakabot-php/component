@@ -10,9 +10,31 @@ use PHPUnit\Framework\TestCase;
 
 abstract class ComponentTestCase extends TestCase
 {
+    protected function setUp(): void
+    {
+        putenv('APP_DEBUG=true');
+        putenv('APP_DIR=/tmp');
+        putenv('APP_ENV=test');
+    }
+
     final protected function assertContainerHasEntry(string $name, string $message = ''): void
     {
         self::assertTrue($this->getContainer()->has($name), $message);
+    }
+
+    final protected function getAppDebug(): bool
+    {
+        return (bool) getenv('APP_DEBUG');
+    }
+
+    final protected function getAppDir(): string
+    {
+        return getenv('APP_DIR') ?: '/tmp';
+    }
+
+    final protected function getAppEnvironment(): string
+    {
+        return getenv('APP_ENV') ?: 'test';
     }
 
     abstract protected function getComponent(): ComponentInterface;
