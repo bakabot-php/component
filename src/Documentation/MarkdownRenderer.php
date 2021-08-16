@@ -9,12 +9,29 @@ use Bakabot\Component\Attribute\RegistersService;
 use Bakabot\Component\Component;
 use Bakabot\Component\DependentComponent;
 use MaddHatter\MarkdownTable\Builder as Table;
+use ReflectionClass;
+use ReflectionException;
 
 final class MarkdownRenderer
 {
     private static function backtick(string $text): string
     {
         return "`$text`";
+    }
+
+    /**
+     * @param class-string|string $name
+     * @param class-string $type
+     * @throws ReflectionException
+     */
+    private static function label(string $name, string $type): string
+    {
+        $r = new ReflectionClass($type);
+
+        return match (true) {
+            class_exists($name) => 'type: ',
+            $r->isInterface() => 'provides: ',
+        };
     }
 
     private static function renderDefaultValue(mixed $value): string
@@ -44,8 +61,9 @@ final class MarkdownRenderer
         }
 
         return sprintf(
-            '%s (%s)',
+            '%s (%s%s)',
             class_exists($name) ? self::backtick($name) : '"' . $name . '"',
+            self::label($name, $type),
             self::backtick($type)
         );
     }
@@ -119,7 +137,7 @@ final class MarkdownRenderer
     public static function renderServices(array $components, bool $recursive = false): string
     {
         $table = new Table();
-        $table->headers(['Type', 'Description']);
+        $table->headers(['Name', 'Description']);
 
         $rows = [];
         foreach (self::resolveDependencies($components, $recursive) as $component) {
