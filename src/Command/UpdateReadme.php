@@ -22,6 +22,7 @@ final class UpdateReadme extends Command
 
     public const NAME = 'update-readme';
     public const OPT_BASE_DIR = 'base-dir';
+    public const OPT_DRY_RUN = 'dry-run';
     public const OPT_RECURSIVE = 'recursive';
     public const OPT_SEARCH_FOLDERS = 'search-folders';
 
@@ -42,6 +43,12 @@ final class UpdateReadme extends Command
                 InputOption::VALUE_REQUIRED,
                 'The base directory in which to look for a readme file',
                 $this->baseDir
+            )
+            ->addOption(
+                self::OPT_DRY_RUN,
+                null,
+                InputOption::VALUE_NONE,
+                'Validate that the README file is up-to-date'
             )
             ->addOption(
                 self::OPT_RECURSIVE,
@@ -65,9 +72,15 @@ final class UpdateReadme extends Command
      * @param string $outFile
      * @param Component[] $components
      * @param bool $recursive
+     * @param bool $dryRun
      */
-    private function updateReadme(string $distFile, string $outFile, array $components, bool $recursive): void
-    {
+    private function updateReadme(
+        string $distFile,
+        string $outFile,
+        array $components,
+        bool $recursive,
+        bool $dryRun
+    ): void {
         clearstatcache();
 
         if (!file_exists($distFile)) {
@@ -89,7 +102,23 @@ final class UpdateReadme extends Command
             $distContents = str_replace($placeholder, $section, $distContents);
         }
 
-        if (file_exists($outFile)) {
+        $outFileExists = file_exists($outFile);
+
+        if ($dryRun) {
+            if ($outFileExists) {
+                $outFileContents = file_get_contents($outFile);
+
+                if ($distContents === $outFileContents) {
+                    return;
+                }
+            }
+
+            $filename = basename($outFile);
+
+            throw new RuntimeException(sprintf('%s has not been updated before committing.', $filename));
+        }
+
+        if ($outFileExists) {
             try {
                 copy($outFile, "$outFile.bak");
             } catch (Throwable $ex) {
@@ -110,6 +139,7 @@ final class UpdateReadme extends Command
         $baseDir = $input->getOption(self::OPT_BASE_DIR);
         $baseDir = rtrim($baseDir, "\\/");
         $distFile = $baseDir . '/README.md.dist';
+        $dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
         $recursive = (bool) $input->getOption(self::OPT_RECURSIVE);
         $outFile = $baseDir . '/README.md';
 
@@ -121,7 +151,7 @@ final class UpdateReadme extends Command
 
         try {
             $components = ComponentFinder::getInstances($finder);
-            $this->updateReadme($distFile, $outFile, $components, $recursive);
+            $this->updateReadme($distFile, $outFile, $components, $recursive, $dryRun);
         } catch (Throwable $ex) {
             $output->writeln('<error>' . $ex->getMessage() . ' Exiting...</error>');
             return 1;

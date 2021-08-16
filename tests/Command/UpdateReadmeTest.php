@@ -57,6 +57,45 @@ DIST,
     }
 
     /** @test */
+    public function dry_run_returns_when_file_is_up_to_date(): void
+    {
+        $commandTester = new CommandTester(new UpdateReadme());
+        $commandTester->execute(
+            [
+                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
+            ]
+        );
+
+        $exitCode = $commandTester->execute(
+            [
+                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
+                '--' . UpdateReadme::OPT_DRY_RUN => true,
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
+            ]
+        );
+
+        self::assertSame(0, $exitCode);
+    }
+
+    /** @test */
+    public function dry_run_fails_when_out_file_does_not_exist(): void
+    {
+        $commandTester = new CommandTester(new UpdateReadme());
+        $exitCode = $commandTester->execute(
+            [
+                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
+                '--' . UpdateReadme::OPT_DRY_RUN => true,
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
+            ]
+        );
+
+        self::assertSame(1, $exitCode);
+        self::assertFalse($this->vfs->hasChild('README.md'));
+        self::assertSame("README.md has not been updated before committing. Exiting...\n", $commandTester->getDisplay());
+    }
+
+    /** @test */
     public function fails_when_dist_file_does_not_exist(): void
     {
         $this->vfs->removeChild('README.md.dist');
