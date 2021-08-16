@@ -6,11 +6,11 @@ declare(strict_types = 1);
 use Bakabot\Component\Command\UpdateReadme;
 use Symfony\Component\Console\Application;
 
-$possibleAutoloaderLocations = [];
-for ($level = 2; $level > 0; $level--) {
-    $possibleAutoloaderLocations[] = dirname(__DIR__, $level) . '/vendor/autoload.php';
-}
-$possibleAutoloaderLocations[] = __DIR__ . '/vendor/autoload.php';
+$possibleAutoloaderLocations = [
+    dirname(__DIR__, 3) . '/autoload.php', // installed as dependency
+    dirname(__DIR__) . '/vendor/autoload.php', // direct invocation
+    __DIR__ . '/vendor/autoload.php',
+];
 
 $autoloadFile = null;
 foreach ($possibleAutoloaderLocations as $file) {
