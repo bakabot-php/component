@@ -117,39 +117,6 @@ abstract class ComponentTestCase extends TestCase
                 sprintf('[%s] is not registered in the container', $service->getType())
             );
 
-            foreach ($service->getAliases() as $alias) {
-                $this->assertContainerHasEntry($alias, "[$alias] is not registered in the container");
-            }
-
-            self::assertInstanceOf(
-                $service->getType(),
-                $service->resolve($container)
-            );
-        }
-    }
-
-    /** @test */
-    public function marks_extended_services(): void
-    {
-        $component = $this->getComponent();
-
-        if (
-            ($component instanceof DependentComponent) === false
-            || ($services = Parser::parseExtendedServices($component)) === []
-        ) {
-            /** @psalm-suppress InternalMethod */
-            $this->addToAssertionCount(1);
-            return;
-        }
-
-        $container = $this->getContainer();
-
-        foreach ($services as $service) {
-            $this->assertContainerHasEntry(
-                $service->getType(),
-                sprintf('[%s] is not registered in the container', $service->getType())
-            );
-
             self::assertInstanceOf(
                 $service->getType(),
                 $service->resolve($container)

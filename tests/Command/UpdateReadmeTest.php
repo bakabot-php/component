@@ -69,7 +69,7 @@ DIST,
 
         self::assertSame(1, $exitCode);
         self::assertFalse($this->vfs->hasChild('README.md'));
-        self::assertSame("Dist file [vfs://root/README.md.dist] does not exist.\n", $commandTester->getDisplay());
+        self::assertSame("Dist file [vfs://root/README.md.dist] does not exist. Exiting...\n", $commandTester->getDisplay());
     }
 
     /** @test */
@@ -87,7 +87,7 @@ DIST,
         );
 
         self::assertSame(1, $exitCode);
-        self::assertSame("Unable to back up original output file.\n", $commandTester->getDisplay());
+        self::assertSame("Unable to back up original output file. Exiting...\n", $commandTester->getDisplay());
     }
 
     /** @test */
@@ -105,6 +105,6 @@ DIST,
         );
 
         self::assertSame(1, $exitCode);
-        self::assertSame("Unable to write to output file.\n", $commandTester->getDisplay());
+        self::assertSame("Unable to write to output file. Exiting...\n", $commandTester->getDisplay());
     }
 }

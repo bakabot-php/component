@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Bakabot\Component\Documentation;
 
 use Bakabot\Component\Attribute\RegistersParameter;
+use Bakabot\Component\Attribute\RegistersService;
 use Bakabot\Component\Component;
 use Bakabot\Component\DependentComponent;
 use MaddHatter\MarkdownTable\Builder as Table;
@@ -16,24 +17,31 @@ final class MarkdownRenderer
         return "`$text`";
     }
 
-    /**
-     * @param string[] $aliases
-     * @return string
-     */
-    private static function renderAliases(array $aliases): string
-    {
-        return implode(', ', array_map([self::class, 'backtick'], $aliases));
-    }
-
     private static function renderParameter(RegistersParameter $parameter): string
     {
         if ($parameter->getDefaultValue() === RegistersParameter::DEFAULT_VALUE) {
             return '*none*';
         }
 
-        $asString = var_export($parameter->getDefaultValue(), true);
+        $asString = stripslashes(var_export($parameter->getDefaultValue(), true));
 
         return str_replace("'", '"', $asString);
+    }
+
+    private static function renderService(RegistersService $service): string
+    {
+        $name = $service->getName();
+        $type = $service->getType();
+
+        if ($name === $type) {
+            return self::backtick($name);
+        }
+
+        return sprintf(
+            '"%s" (%s)',
+            $name,
+            self::backtick($type)
+        );
     }
 
     /**
@@ -110,12 +118,9 @@ final class MarkdownRenderer
         $rows = [];
         foreach (self::resolveDependencies($components, $recursive) as $component) {
             foreach (Parser::parseServices($component) as $service) {
-                $type = $service->getType();
-
-                $rows[$type] =  [
-                    self::backtick($type),
-                    $service->getDescription(),
-                    self::renderAliases($service->getAliases()),
+                $rows[$service->getName()] =  [
+                    self::renderService($service),
+                    $service->getDescription()
                 ];
             }
         }

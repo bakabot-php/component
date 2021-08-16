@@ -10,9 +10,9 @@ use Psr\Container\ContainerInterface;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class RegistersService
 {
-    /** @var string[] */
-    private array $aliases;
     private string $description;
+    /** @var class-string|string */
+    private string $name;
     /** @var class-string */
     private string $type;
 
@@ -20,26 +20,32 @@ final class RegistersService
     public const DEFAULT_DESCRIPTION = 'No description available.';
 
     /**
-     * @param class-string $type
-     * @param string|string[] $aliases
+     * @param class-string|string $name
+     * @param class-string|null $type
      * @param string $description
      */
-    public function __construct(string $type, string|array $aliases = [], string $description = self::DEFAULT_DESCRIPTION)
+    public function __construct(string $name, ?string $type = null, string $description = self::DEFAULT_DESCRIPTION)
     {
-        $this->aliases = (array) $aliases;
         $this->description = $description;
-        $this->type = $type;
-    }
+        $this->name = $name;
 
-    /** @return string[] */
-    public function getAliases(): array
-    {
-        return $this->aliases;
+        if ($type === null) {
+            assert(class_exists($name));
+            $type = $name;
+        }
+
+        $this->type = $type;
     }
 
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    /** @return class-string|string */
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /** @return class-string */
@@ -50,8 +56,9 @@ final class RegistersService
 
     public function resolve(ContainerInterface $container): object
     {
-        $service = $container->get($this->type);
+        $service = $container->get($this->name);
         assert(is_object($service));
+        assert(is_a($service, $this->type));
 
         return $service;
     }
@@ -59,9 +66,9 @@ final class RegistersService
     public function toArray(): array
     {
         return [
-            'aliases' => $this->aliases,
-            'type' => $this->type,
             'description' => $this->description,
+            'name' => $this->name,
+            'type' => $this->type,
         ];
     }
 }

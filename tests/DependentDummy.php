@@ -4,14 +4,14 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component;
 
-use Bakabot\Component\Attribute\ExtendsService;
 use Bakabot\Component\Attribute\RegistersParameter;
+use Bakabot\Component\Attribute\RegistersService;
 use Psr\Container\ContainerInterface;
 use stdClass;
 use function DI\decorate;
 
-#[ExtendsService(stdClass::class, 'Adds a test flag to the instance')]
 #[RegistersParameter('greeting', 'string', 'Hello World')]
+#[RegistersService(stdClass::class, null, 'Adds a test flag to the instance')]
 class DependentDummy extends AbstractComponent implements DependentComponent
 {
     protected function getParameters(): array
