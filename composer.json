@@ -5,6 +5,8 @@
     "require": {
         "php": ">=8.0",
         "acclimate/container": "^2",
+        "hanneskod/classtools": "^1.2",
+        "maddhatter/markdown-table": "^1.0",
         "php-di/php-di": "^6"
     },
     "require-dev": {
@@ -14,9 +16,19 @@
     "suggest": {
         "php-di/php-di": "Recommended default container"
     },
+    "config": {
+        "lock": false,
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
     "autoload": {
         "psr-4": {
-            "Bakabot\\Component\\": "src/"
+            "Bakabot\\Component\\": [
+                "lib/",
+                "src/"
+            ]
         }
     },
     "autoload-dev": {
@@ -24,11 +36,7 @@
             "Bakabot\\Component\\": "tests/"
         }
     },
-    "config": {
-        "lock": false,
-        "preferred-install": {
-            "*": "dist"
-        },
-        "sort-packages": true
-    }
+    "bin": [
+        "bin/update-readme"
+    ]
 }

@@ -23,8 +23,8 @@ final class RegistersParameter
     public function __construct(
         string $name,
         string $type,
-        string $description = self::DEFAULT_DESCRIPTION,
-        mixed $defaultValue = self::DEFAULT_VALUE
+        mixed $defaultValue = self::DEFAULT_VALUE,
+        string $description = self::DEFAULT_DESCRIPTION
     ) {
         $this->defaultValue = $defaultValue;
         $this->description = $description;

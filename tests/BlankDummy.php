@@ -7,7 +7,7 @@ namespace Bakabot\Component;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 
-class BlankDummy implements ComponentInterface
+class BlankDummy implements Component
 {
     public function __construct()
     {
@@ -15,17 +15,14 @@ class BlankDummy implements ComponentInterface
 
     public function boot(ContainerInterface $container): void
     {
-        // TODO: Implement boot() method.
     }
 
     public function register(ContainerBuilder $containerBuilder): void
     {
-        // TODO: Implement register() method.
     }
 
     public function shutdown(ContainerInterface $container): void
     {
-        // TODO: Implement shutdown() method.
     }
 
     public function __toString(): string

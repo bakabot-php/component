@@ -11,11 +11,11 @@ use Traversable;
 
 final class Collection implements IteratorAggregate
 {
-    /** @var ComponentInterface[] */
+    /** @var Component[] */
     private array $components = [];
 
     /**
-     * @param ComponentInterface[] $components
+     * @param Component[] $components
      */
     public function __construct(array $components = [])
     {
@@ -24,13 +24,13 @@ final class Collection implements IteratorAggregate
         }
     }
 
-    private function registerComponentDependencies(ComponentInterface $component): void
+    private function registerDependencies(Component $component): void
     {
-        if (!($component instanceof DependentComponentInterface)) {
+        if (!($component instanceof DependentComponent)) {
             return;
         }
 
-        foreach ($component->getComponentDependencies() as $dependency) {
+        foreach ($component->getDependencies() as $dependency) {
             if (!$this->has($dependency)) {
                 $this->push(new $dependency());
             }
@@ -38,7 +38,7 @@ final class Collection implements IteratorAggregate
     }
 
     /**
-     * @return ArrayIterator<array-key, ComponentInterface>
+     * @return ArrayIterator<array-key, Component>
      */
     public function getIterator(): Traversable
     {
@@ -48,7 +48,7 @@ final class Collection implements IteratorAggregate
     }
 
     /**
-     * @param ComponentInterface|class-string<ComponentInterface> $component
+     * @param Component|class-string<Component> $component
      * @return bool
      */
     public function has(string|Stringable $component): bool
@@ -56,13 +56,13 @@ final class Collection implements IteratorAggregate
         return isset($this->components[(string) $component]);
     }
 
-    public function push(ComponentInterface $component): void
+    public function push(Component $component): void
     {
         if ($this->has($component)) {
             return;
         }
 
-        $this->registerComponentDependencies($component);
+        $this->registerDependencies($component);
         $this->components[(string) $component] = $component;
     }
 }

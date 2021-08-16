@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types = 1);
+
+use Bakabot\Component\Command\UpdateReadme;
+use Symfony\Component\Console\Application;
+
+$possibleAutoloaderLocations = [];
+for ($level = 2; $level > 0; $level--) {
+    $possibleAutoloaderLocations[] = dirname(__DIR__, $level) . '/vendor/autoload.php';
+}
+$possibleAutoloaderLocations[] = __DIR__ . '/vendor/autoload.php';
+
+$autoloadFile = null;
+foreach ($possibleAutoloaderLocations as $file) {
+    if (file_exists($file)) {
+        $autoloadFile = $file;
+        break;
+    }
+}
+
+if ($autoloadFile === null) {
+    die("Couldn't find Composer autoloader, exiting.\n");
+}
+
+require $autoloadFile;
+
+$baseDir = dirname($autoloadFile, 2);
+
+$app = new Application();
+$app->add(new UpdateReadme($baseDir));
+$app->setDefaultCommand(UpdateReadme::NAME, true);
+$app->run();
+

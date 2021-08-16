@@ -7,9 +7,9 @@ namespace Bakabot\Component;
 use Psr\Log\LoggerInterface;
 use stdClass;
 
-class DependencyDummyComponentTest extends ComponentTestCase
+class DependencyDummyTest extends ComponentTestCase
 {
-    protected function getComponent(): ComponentInterface
+    protected function getComponent(): Component
     {
         return new DependencyDummy();
     }

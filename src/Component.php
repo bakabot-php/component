@@ -8,7 +8,7 @@ use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Stringable;
 
-interface ComponentInterface extends Stringable
+interface Component extends Stringable
 {
     public function __construct();
 

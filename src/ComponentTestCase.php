@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component;
 
+use Bakabot\Component\Documentation\Parser;
 use DI\Container;
 use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
@@ -37,17 +38,17 @@ abstract class ComponentTestCase extends TestCase
         return getenv('APP_ENV') ?: 'test';
     }
 
-    abstract protected function getComponent(): ComponentInterface;
+    abstract protected function getComponent(): Component;
 
-    /** @return ComponentInterface[] */
+    /** @return Component[] */
     final protected function getComponents(): array
     {
         $component = $this->getComponent();
 
-        $components = $component instanceof DependentComponentInterface
+        $components = $component instanceof DependentComponent
             ? array_map(
                 static fn (string $component) => new $component(),
-                $component->getComponentDependencies()
+                $component->getDependencies()
             )
             : []
         ;
@@ -76,8 +77,9 @@ abstract class ComponentTestCase extends TestCase
     public function registers_annotated_parameters(): void
     {
         $component = $this->getComponent();
+        $parameters = Parser::parseParameters($component);
 
-        if (($component instanceof AbstractComponent) === false || $component->getRegisteredParameters() === []) {
+        if ($parameters === []) {
             /** @psalm-suppress InternalMethod */
             $this->addToAssertionCount(1);
             return;
@@ -85,7 +87,7 @@ abstract class ComponentTestCase extends TestCase
 
         $container = $this->getContainer();
 
-        foreach ($component->getRegisteredParameters() as $parameter) {
+        foreach ($parameters as $parameter) {
             $this->assertContainerHasEntry($parameter->getName());
 
             self::assertSame(
@@ -99,8 +101,9 @@ abstract class ComponentTestCase extends TestCase
     public function registers_annotated_services(): void
     {
         $component = $this->getComponent();
+        $services = Parser::parseServices($component);
 
-        if (($component instanceof AbstractComponent) === false || $component->getRegisteredServices() === []) {
+        if ($services === []) {
             /** @psalm-suppress InternalMethod */
             $this->addToAssertionCount(1);
             return;
@@ -108,7 +111,7 @@ abstract class ComponentTestCase extends TestCase
 
         $container = $this->getContainer();
 
-        foreach ($component->getRegisteredServices() as $service) {
+        foreach ($services as $service) {
             $this->assertContainerHasEntry(
                 $service->getType(),
                 sprintf('[%s] is not registered in the container', $service->getType())
@@ -117,6 +120,35 @@ abstract class ComponentTestCase extends TestCase
             foreach ($service->getAliases() as $alias) {
                 $this->assertContainerHasEntry($alias, "[$alias] is not registered in the container");
             }
+
+            self::assertInstanceOf(
+                $service->getType(),
+                $service->resolve($container)
+            );
+        }
+    }
+
+    /** @test */
+    public function marks_extended_services(): void
+    {
+        $component = $this->getComponent();
+
+        if (
+            ($component instanceof DependentComponent) === false
+            || ($services = Parser::parseExtendedServices($component)) === []
+        ) {
+            /** @psalm-suppress InternalMethod */
+            $this->addToAssertionCount(1);
+            return;
+        }
+
+        $container = $this->getContainer();
+
+        foreach ($services as $service) {
+            $this->assertContainerHasEntry(
+                $service->getType(),
+                sprintf('[%s] is not registered in the container', $service->getType())
+            );
 
             self::assertInstanceOf(
                 $service->getType(),

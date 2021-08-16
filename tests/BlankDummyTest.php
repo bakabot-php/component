@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component;
 
-class BlankDummyComponentTest extends ComponentTestCase
+class BlankDummyTest extends ComponentTestCase
 {
-    protected function getComponent(): ComponentInterface
+    protected function getComponent(): Component
     {
         return new BlankDummy();
     }
