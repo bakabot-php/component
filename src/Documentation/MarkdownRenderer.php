@@ -29,8 +29,10 @@ final class MarkdownRenderer
         $r = new ReflectionClass($type);
 
         return match (true) {
-            class_exists($name) => 'type: ',
-            $r->isInterface() => 'provides: ',
+            class_exists($name) && $r->isInterface() => 'provides: ',
+            $r->isInterface() => 'is: ',
+            is_a($name, $type, true) => 'decorates: ',
+            default => '',
         };
     }
 
