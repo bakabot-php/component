@@ -36,8 +36,8 @@ final class MarkdownRenderer
         }
 
         return sprintf(
-            '"%s" (%s)',
-            class_exists($name) ? self::backtick($name) : $name,
+            '%s (%s)',
+            class_exists($name) ? self::backtick($name) : '"' . $name . '"',
             self::backtick($type)
         );
     }
@@ -111,7 +111,7 @@ final class MarkdownRenderer
     public static function renderServices(array $components, bool $recursive = false): string
     {
         $table = new Table();
-        $table->headers(['Type', 'Description', 'Aliases']);
+        $table->headers(['Type', 'Description']);
 
         $rows = [];
         foreach (self::resolveDependencies($components, $recursive) as $component) {
