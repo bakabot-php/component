@@ -46,8 +46,9 @@ final class UpdateReadme extends Command
             ->addOption(
                 self::OPT_RECURSIVE,
                 null,
-                InputOption::VALUE_NONE,
-                'Update readme with parameters and services in *all* components'
+                InputOption::VALUE_NEGATABLE,
+                'Update readme with parameters and services in *all* components',
+                true
             )
             ->addOption(
                 self::OPT_SEARCH_FOLDERS,
@@ -109,7 +110,7 @@ final class UpdateReadme extends Command
         $baseDir = $input->getOption(self::OPT_BASE_DIR);
         $baseDir = rtrim($baseDir, "\\/");
         $distFile = $baseDir . '/README.md.dist';
-        $recursive = $input->hasOption(self::OPT_RECURSIVE);
+        $recursive = (bool) $input->getOption(self::OPT_RECURSIVE);
         $outFile = $baseDir . '/README.md';
 
         $finder = new Finder();

@@ -73,7 +73,7 @@ DIST,
     }
 
     /** @test */
-    public function fails_when_backup_fails(): void
+    public function fails_on_backup_error(): void
     {
         vfsStream::newFile('README.md')->at($this->vfs);
         vfsStream::newFile('README.md.bak', 0000)->at($this->vfs);
@@ -91,7 +91,7 @@ DIST,
     }
 
     /** @test */
-    public function fails_when_writing_fails(): void
+    public function fails_on_write_error(): void
     {
         vfsStream::newFile('README.md', 0400)->at($this->vfs);
         vfsStream::newFile('README.md.bak')->at($this->vfs);

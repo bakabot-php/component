@@ -13,7 +13,7 @@ use function DI\env;
 use function DI\get;
 
 #[RegistersParameter('name', 'string', 'World')]
-#[RegistersService('logger', LoggerInterface::class)]
+#[RegistersService('logger', '', LoggerInterface::class)]
 #[RegistersService(stdClass::class)]
 class DependencyDummy extends AbstractComponent
 {

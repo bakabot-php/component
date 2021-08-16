@@ -21,10 +21,10 @@ final class RegistersService
 
     /**
      * @param class-string|string $name
-     * @param class-string|null $type
      * @param string $description
+     * @param class-string|null $type
      */
-    public function __construct(string $name, ?string $type = null, string $description = self::DEFAULT_DESCRIPTION)
+    public function __construct(string $name, string $description = self::DEFAULT_DESCRIPTION, ?string $type = null)
     {
         $this->description = $description;
         $this->name = $name;
