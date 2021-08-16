@@ -17,13 +17,21 @@ final class MarkdownRenderer
         return "`$text`";
     }
 
-    private static function renderParameter(RegistersParameter $parameter): string
+    private static function renderDefaultValue(mixed $value): string
     {
-        if ($parameter->getDefaultValue() === RegistersParameter::DEFAULT_VALUE) {
+        if ($value === RegistersParameter::DEFAULT_VALUE) {
             return '*none*';
         }
 
-        return stripslashes(var_export($parameter->getDefaultValue(), true));
+        // insert raw expressions directly
+        if (is_string($value) && str_starts_with($value, 'e:')) {
+            return substr($value, 2);
+        }
+
+        $asString = var_export($value, true);
+        $asString = stripslashes($asString);
+
+        return str_replace("'", '"', $asString);
     }
 
     private static function renderService(RegistersService $service): string
@@ -90,7 +98,7 @@ final class MarkdownRenderer
                 $rows[$name] = [
                     self::backtick($name),
                     self::backtick($parameter->getType()),
-                    self::backtick(self::renderParameter($parameter)),
+                    self::backtick(self::renderDefaultValue($parameter->getDefaultValue())),
                     $parameter->getDescription()
                 ];
             }
