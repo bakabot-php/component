@@ -11,7 +11,7 @@ use stdClass;
 use function DI\decorate;
 
 #[RegistersParameter('greeting', 'string', 'Hello World')]
-#[RegistersService(stdClass::class, 'Adds a test flag to the instance')]
+#[RegistersService(stdClass::class, 'Adds a test flag to the instance', stdClass::class)]
 class DependentDummy extends AbstractComponent implements DependentComponent
 {
     protected function getParameters(): array

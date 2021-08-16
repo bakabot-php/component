@@ -31,7 +31,6 @@ final class MarkdownRenderer
         return match (true) {
             class_exists($name) && $r->isInterface() => 'provides: ',
             $r->isInterface() => 'is: ',
-            is_a($name, $type, true) => 'decorates: ',
             default => '',
         };
     }

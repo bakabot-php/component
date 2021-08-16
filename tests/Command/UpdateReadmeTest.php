@@ -29,6 +29,8 @@ class UpdateReadmeTest extends TestCase
 DIST,
                 'src' => [
                     'AppComponent.php' => file_get_contents(dirname(__DIR__) . '/AppComponent.php'),
+                    'DependencyDummy.php' => file_get_contents(dirname(__DIR__) . '/DependencyDummy.php'),
+                    'DependentDummy.php' => file_get_contents(dirname(__DIR__) . '/DependentDummy.php'),
                 ],
             ]
         );
