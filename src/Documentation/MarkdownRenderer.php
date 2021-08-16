@@ -23,9 +23,7 @@ final class MarkdownRenderer
             return '*none*';
         }
 
-        $asString = stripslashes(var_export($parameter->getDefaultValue(), true));
-
-        return str_replace("'", '"', $asString);
+        return stripslashes(var_export($parameter->getDefaultValue(), true));
     }
 
     private static function renderService(RegistersService $service): string
@@ -39,7 +37,7 @@ final class MarkdownRenderer
 
         return sprintf(
             '"%s" (%s)',
-            $name,
+            class_exists($name) ? self::backtick($name) : $name,
             self::backtick($type)
         );
     }
