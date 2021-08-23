@@ -30,7 +30,7 @@ final class RegistersService
         $this->name = $name;
 
         if ($type === null) {
-            assert(class_exists($name));
+            assert(interface_exists($name) || class_exists($name));
             $type = $name;
         }
 
