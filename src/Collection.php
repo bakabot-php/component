@@ -42,8 +42,6 @@ final class Collection implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        reset($this->components);
-
         return new ArrayIterator(array_values($this->components));
     }
 

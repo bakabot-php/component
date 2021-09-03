@@ -1,4 +1,4 @@
-ci: csdiff psalm phpunit cleanup
+ci: cs-diff psalm phpunit cleanup
 
 cleanup:
 	docker-compose down -v
@@ -6,12 +6,15 @@ cleanup:
 composer:
 	docker-compose run --rm composer validate
 	docker-compose run --rm composer install --quiet --no-cache --ignore-platform-reqs
-	docker-compose run --rm composer normalize --quiet --dry-run
 
-csdiff: composer
+cs-diff: composer
 	docker-compose run --rm php vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
 
-csfix: composer
+cs-fix: composer
+	docker-compose run --rm php vendor/bin/php-cs-fixer fix
+
+normalize:
+	docker-compose run --rm composer normalize --quiet
 	docker-compose run --rm php vendor/bin/php-cs-fixer fix
 
 psalm: composer

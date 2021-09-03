@@ -25,10 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Bakabot\\Component\\": [
-                "lib/",
-                "src/"
-            ]
+            "Bakabot\\Component\\": "src/"
         }
     },
     "autoload-dev": {

@@ -20,11 +20,11 @@ class MarkdownRendererTest extends TestCase
         $renderedParameters = MarkdownRenderer::renderParameters([$component]);
 
         foreach ($rawParameters as $parameter) {
-            self::assertStringContainsString($parameter->getName(), $renderedParameters);
-            self::assertStringContainsString($parameter->getType(), $renderedParameters);
+            self::assertStringContainsString($parameter->name, $renderedParameters);
+            self::assertStringContainsString($parameter->type, $renderedParameters);
         }
     }
-    
+
     /** @test */
     public function can_render_component_parameters_recursively(): void
     {
@@ -39,12 +39,12 @@ class MarkdownRendererTest extends TestCase
 
         foreach ($rawParameterSets as $parameterSet) {
             foreach ($parameterSet as $parameter) {
-                self::assertStringContainsString($parameter->getName(), $renderedParameters);
-                self::assertStringContainsString($parameter->getType(), $renderedParameters);
+                self::assertStringContainsString($parameter->name, $renderedParameters);
+                self::assertStringContainsString($parameter->type, $renderedParameters);
             }
         }
     }
-    
+
     /** @test */
     public function can_render_component_services(): void
     {
@@ -54,10 +54,10 @@ class MarkdownRendererTest extends TestCase
         $renderedServices = MarkdownRenderer::renderServices([$component]);
 
         foreach ($rawServices as $service) {
-            self::assertStringContainsString($service->getType(), $renderedServices);
+            self::assertStringContainsString($service->type, $renderedServices);
         }
     }
-    
+
     /** @test */
     public function can_render_component_services_recursively(): void
     {
@@ -72,7 +72,7 @@ class MarkdownRendererTest extends TestCase
 
         foreach ($rawServiceSets as $serviceSet) {
             foreach ($serviceSet as $service) {
-                self::assertStringContainsString($service->getType(), $renderedServices);
+                self::assertStringContainsString($service->type, $renderedServices);
             }
         }
     }

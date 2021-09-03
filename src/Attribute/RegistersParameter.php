@@ -10,46 +10,23 @@ use Psr\Container\ContainerInterface;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class RegistersParameter
 {
-    private mixed $defaultValue;
-    private string $description;
-    private string $name;
-    private string $type;
-
+    /** @var string */
+    private const DEFAULT_EMPTY_VALUE = '__BAKABOT_DEFAULT_VALUE_NONE';
     /** @var string */
     public const DEFAULT_DESCRIPTION = 'No description available.';
-    /** @var string */
-    public const DEFAULT_VALUE = '__BAKABOT_DEFAULT_VALUE_NONE';
 
     public function __construct(
-        string $name,
-        string $type,
-        mixed $defaultValue = self::DEFAULT_VALUE,
-        string $description = self::DEFAULT_DESCRIPTION
+        public /*readonly*/ string $name,
+        public /*readonly*/ string $type,
+        public /*readonly*/ mixed $defaultValue = self::DEFAULT_EMPTY_VALUE,
+        public /*readonly*/ string $description = self::DEFAULT_DESCRIPTION
     ) {
-        $this->defaultValue = $defaultValue;
-        $this->description = $description;
-        $this->name = $name;
-        $this->type = $type;
+
     }
 
-    public function getDefaultValue(): mixed
+    public function hasDefaultValue(): bool
     {
-        return $this->defaultValue;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
+        return $this->defaultValue !== self::DEFAULT_EMPTY_VALUE;
     }
 
     public function resolve(ContainerInterface $container): mixed

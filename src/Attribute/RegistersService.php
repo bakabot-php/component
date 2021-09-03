@@ -10,11 +10,11 @@ use Psr\Container\ContainerInterface;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class RegistersService
 {
-    private string $description;
+    public /*readonly*/ string $description;
     /** @var class-string|string */
-    private string $name;
+    public /*readonly*/ string $name;
     /** @var class-string */
-    private string $type;
+    public /*readonly*/ string $type;
 
     /** @var string */
     public const DEFAULT_DESCRIPTION = 'No description available.';
@@ -24,8 +24,11 @@ final class RegistersService
      * @param string $description
      * @param class-string|null $type
      */
-    public function __construct(string $name, string $description = self::DEFAULT_DESCRIPTION, ?string $type = null)
-    {
+    public function __construct(
+        string $name,
+        string $description = self::DEFAULT_DESCRIPTION,
+        ?string $type = null
+    ) {
         $this->description = $description;
         $this->name = $name;
 
@@ -35,23 +38,6 @@ final class RegistersService
         }
 
         $this->type = $type;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /** @return class-string|string */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /** @return class-string */
-    public function getType(): string
-    {
-        return $this->type;
     }
 
     public function resolve(ContainerInterface $container): object

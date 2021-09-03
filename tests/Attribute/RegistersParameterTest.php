@@ -14,10 +14,10 @@ class RegistersParameterTest extends TestCase
         $attr = new RegistersParameter('param', 'string');
 
         $asArray = [
-            'name' => $attr->getName(),
-            'type' => $attr->getType(),
-            'default_value' => $attr->getDefaultValue(),
-            'description' => $attr->getDescription(),
+            'name' => $attr->name,
+            'type' => $attr->type,
+            'default_value' => $attr->defaultValue,
+            'description' => $attr->description,
         ];
 
         self::assertSame($asArray, $attr->toArray());

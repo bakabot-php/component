@@ -15,9 +15,9 @@ class RegistersServiceTest extends TestCase
         $attr = new RegistersService(stdClass::class);
 
         $asArray = [
-            'description' => $attr->getDescription(),
-            'name' => $attr->getName(),
-            'type' => $attr->getType(),
+            'description' => $attr->description,
+            'name' => $attr->name,
+            'type' => $attr->type,
         ];
 
         self::assertSame($asArray, $attr->toArray());

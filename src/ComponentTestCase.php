@@ -88,10 +88,10 @@ abstract class ComponentTestCase extends TestCase
         $container = $this->getContainer();
 
         foreach ($parameters as $parameter) {
-            $this->assertContainerHasEntry($parameter->getName());
+            $this->assertContainerHasEntry($parameter->name);
 
             self::assertSame(
-                $parameter->getType(),
+                $parameter->type,
                 get_debug_type($parameter->resolve($container)),
             );
         }
@@ -113,14 +113,11 @@ abstract class ComponentTestCase extends TestCase
 
         foreach ($services as $service) {
             $this->assertContainerHasEntry(
-                $service->getType(),
-                sprintf('[%s] is not registered in the container', $service->getType())
+                $service->type,
+                sprintf('[%s] is not registered in the container', $service->type)
             );
 
-            self::assertInstanceOf(
-                $service->getType(),
-                $service->resolve($container)
-            );
+            self::assertInstanceOf($service->type, $service->resolve($container));
         }
     }
 }

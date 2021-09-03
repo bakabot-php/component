@@ -35,18 +35,18 @@ final class MarkdownRenderer
         };
     }
 
-    private static function renderDefaultValue(mixed $value): string
+    private static function renderDefaultValue(RegistersParameter $parameter): string
     {
-        if ($value === RegistersParameter::DEFAULT_VALUE) {
+        if ($parameter->hasDefaultValue() === false) {
             return '*none*';
         }
 
         // insert raw expressions directly
-        if (is_string($value) && str_starts_with($value, 'e:')) {
-            return substr($value, 2);
+        if (is_string($parameter->defaultValue) && str_starts_with($parameter->defaultValue, 'e:')) {
+            return substr($parameter->defaultValue, 2);
         }
 
-        $asString = var_export($value, true);
+        $asString = var_export($parameter->defaultValue, true);
         $asString = stripslashes($asString);
 
         return str_replace("'", '"', $asString);
@@ -54,8 +54,8 @@ final class MarkdownRenderer
 
     private static function renderService(RegistersService $service): string
     {
-        $name = $service->getName();
-        $type = $service->getType();
+        $name = $service->name;
+        $type = $service->type;
 
         if ($name === $type) {
             return self::backtick($name);
@@ -112,13 +112,13 @@ final class MarkdownRenderer
         $rows = [];
         foreach (self::resolveDependencies($components, $recursive) as $component) {
             foreach (Parser::parseParameters($component) as $parameter) {
-                $name = $parameter->getName();
+                $name = $parameter->name;
 
                 $rows[$name] = [
                     self::backtick($name),
-                    self::backtick($parameter->getType()),
-                    self::backtick(self::renderDefaultValue($parameter->getDefaultValue())),
-                    $parameter->getDescription()
+                    self::backtick($parameter->type),
+                    self::backtick(self::renderDefaultValue($parameter)),
+                    $parameter->description
                 ];
             }
         }
@@ -143,9 +143,9 @@ final class MarkdownRenderer
         $rows = [];
         foreach (self::resolveDependencies($components, $recursive) as $component) {
             foreach (Parser::parseServices($component) as $service) {
-                $rows[$service->getName()] =  [
+                $rows[$service->name] = [
                     self::renderService($service),
-                    $service->getDescription()
+                    $service->description
                 ];
             }
         }
