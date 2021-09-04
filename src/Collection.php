@@ -19,6 +19,8 @@ final class Collection implements IteratorAggregate
      */
     public function __construct(array $components = [])
     {
+        $this->push(new CoreComponent());
+
         foreach ($components as $component) {
             $this->push($component);
         }
@@ -26,7 +28,10 @@ final class Collection implements IteratorAggregate
 
     private function registerDependencies(Component $component): void
     {
-        if (!($component instanceof DependentComponent)) {
+        if (
+            !($component instanceof DependentComponent)
+            || ($component instanceof CoreComponent)
+        ) {
             return;
         }
 

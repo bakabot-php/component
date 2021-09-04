@@ -9,18 +9,18 @@ use PHPUnit\Framework\TestCase;
 class CollectionTest extends TestCase
 {
     /** @test */
-    public function empty_collection_is_considered_null_iterator(): void
+    public function fresh_collection_contains_core_component(): void
     {
         $collection = new Collection();
 
-        self::assertSame(0, iterator_count($collection));
+        self::assertSame(1, iterator_count($collection));
     }
 
     /** @test */
     public function instantiating_with_basic_component_returns_it_during_iteration(): void
     {
         $component = new DependencyDummy();
-        $components = [$component];
+        $components = [new CoreComponent(), $component];
         $collection = new Collection($components);
 
         self::assertEquals($components, iterator_to_array($collection));
@@ -34,7 +34,7 @@ class CollectionTest extends TestCase
         $collection = new Collection();
         $collection->push($component);
 
-        self::assertEquals([$component], iterator_to_array($collection));
+        self::assertEquals([new CoreComponent(), $component], iterator_to_array($collection));
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class CollectionTest extends TestCase
         $collection->push($component);
         $collection->push($component);
 
-        self::assertEquals([$component], iterator_to_array($collection));
+        self::assertEquals([new CoreComponent(), $component], iterator_to_array($collection));
     }
 
     /** @test */
@@ -58,6 +58,6 @@ class CollectionTest extends TestCase
         $collection = new Collection();
         $collection->push($dependent);
 
-        self::assertEquals([$dependency, $dependent], iterator_to_array($collection));
+        self::assertEquals([new CoreComponent(), $dependency, $dependent], iterator_to_array($collection));
     }
 }

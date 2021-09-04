@@ -45,13 +45,13 @@ abstract class ComponentTestCase extends TestCase
     {
         $component = $this->getComponent();
 
-        $components = $component instanceof DependentComponent
+        $components = ($component instanceof DependentComponent
             ? array_map(
-                static fn (string $component) => new $component(),
+                static fn(string $component) => new $component(),
                 $component->getDependencies()
             )
             : []
-        ;
+        );
         $components[] = $component;
 
         return $components;
@@ -59,7 +59,8 @@ abstract class ComponentTestCase extends TestCase
 
     final protected function getContainer(): Container
     {
-        return $this->getContainerBuilder()->build();
+        return $this->getContainerBuilder()->build()
+        ;
     }
 
     final protected function getContainerBuilder(): ContainerBuilder
@@ -109,15 +110,11 @@ abstract class ComponentTestCase extends TestCase
             return;
         }
 
-        $container = $this->getContainer();
-
         foreach ($services as $service) {
             $this->assertContainerHasEntry(
                 $service->type,
                 sprintf('[%s] is not registered in the container', $service->type)
             );
-
-            self::assertInstanceOf($service->type, $service->resolve($container));
         }
     }
 }

@@ -10,6 +10,7 @@
         "php-di/php-di": "^6"
     },
     "require-dev": {
+        "bakabot/component-core": "dev-main",
         "bakabot/development": "^2.0",
         "roave/security-advisories": "dev-latest"
     },
