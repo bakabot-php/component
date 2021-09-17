@@ -17,12 +17,12 @@ class AbstractComponentTest extends TestCase
             private bool $wasBooted = false;
             private bool $wasShutdown = false;
 
-            protected function getParameters(): array
+            protected function parameters(): array
             {
                 return [];
             }
 
-            protected function getServices(): array
+            protected function services(): array
             {
                 return [];
             }

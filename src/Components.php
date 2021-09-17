@@ -5,24 +5,21 @@ declare(strict_types = 1);
 namespace Bakabot\Component;
 
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
-use Stringable;
 use Traversable;
 
-final class Collection implements IteratorAggregate
+final class Components implements Countable, IteratorAggregate
 {
     /** @var Component[] */
     private array $components = [];
 
-    /**
-     * @param Component[] $components
-     */
-    public function __construct(array $components = [])
+    public function __construct(Component ...$components)
     {
-        $this->push(new CoreComponent());
+        $this->add(new CoreComponent());
 
         foreach ($components as $component) {
-            $this->push($component);
+            $this->add($component);
         }
     }
 
@@ -35,11 +32,24 @@ final class Collection implements IteratorAggregate
             return;
         }
 
-        foreach ($component->getDependencies() as $dependency) {
-            if (!$this->has($dependency)) {
-                $this->push(new $dependency());
-            }
+        foreach ($component->dependencies() as $dependency) {
+            $this->add(new $dependency());
         }
+    }
+
+    public function add(Component $component): void
+    {
+        if ($this->has($component)) {
+            return;
+        }
+
+        $this->registerDependencies($component);
+        $this->components[(string) $component] = $component;
+    }
+
+    public function count(): int
+    {
+        return count($this->components);
     }
 
     /**
@@ -54,18 +64,8 @@ final class Collection implements IteratorAggregate
      * @param Component|class-string<Component> $component
      * @return bool
      */
-    public function has(string|Stringable $component): bool
+    public function has(string|Component $component): bool
     {
         return isset($this->components[(string) $component]);
-    }
-
-    public function push(Component $component): void
-    {
-        if ($this->has($component)) {
-            return;
-        }
-
-        $this->registerDependencies($component);
-        $this->components[(string) $component] = $component;
     }
 }

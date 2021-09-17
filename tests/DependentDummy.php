@@ -14,7 +14,7 @@ use function DI\decorate;
 #[RegistersService(stdClass::class, 'Adds a test flag to the instance', stdClass::class)]
 class DependentDummy extends AbstractComponent implements DependentComponent
 {
-    protected function getParameters(): array
+    protected function parameters(): array
     {
         return [
             'greeting' => static function (ContainerInterface $container) {
@@ -23,7 +23,7 @@ class DependentDummy extends AbstractComponent implements DependentComponent
         ];
     }
 
-    protected function getServices(): array
+    protected function services(): array
     {
         return [
             stdClass::class => decorate(function (stdClass $previous) {
@@ -34,7 +34,7 @@ class DependentDummy extends AbstractComponent implements DependentComponent
         ];
     }
 
-    public function getDependencies(): array
+    public function dependencies(): array
     {
         return [
             DependencyDummy::class,

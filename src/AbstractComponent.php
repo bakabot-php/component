@@ -13,9 +13,9 @@ abstract class AbstractComponent implements Component
     {
     }
 
-    abstract protected function getParameters(): array;
+    abstract protected function parameters(): array;
 
-    abstract protected function getServices(): array;
+    abstract protected function services(): array;
 
     public function boot(ContainerInterface $container): void
     {
@@ -23,7 +23,7 @@ abstract class AbstractComponent implements Component
 
     public function register(ContainerBuilder $containerBuilder): void
     {
-        $containerBuilder->addDefinitions($this->getParameters(), $this->getServices());
+        $containerBuilder->addDefinitions($this->parameters(), $this->services());
     }
 
     public function shutdown(ContainerInterface $container): void

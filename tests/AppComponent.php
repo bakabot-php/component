@@ -12,7 +12,7 @@ use function DI\env;
 #[RegistersParameter('heck', 'string')]
 class AppComponent extends AbstractComponent implements DependentComponent
 {
-    protected function getParameters(): array
+    protected function parameters(): array
     {
         return [
             'env' => env('APP_ENV', 'prod'),
@@ -20,12 +20,12 @@ class AppComponent extends AbstractComponent implements DependentComponent
         ];
     }
 
-    protected function getServices(): array
+    protected function services(): array
     {
         return [];
     }
 
-    public function getDependencies(): array
+    public function dependencies(): array
     {
         return [DependentDummy::class];
     }

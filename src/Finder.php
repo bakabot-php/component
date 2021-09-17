@@ -6,34 +6,38 @@ namespace Bakabot\Component;
 
 use hanneskod\classtools\Iterator\ClassIterator;
 use ReflectionClass;
-use ReflectionException;
 use Symfony\Component\Finder\Finder as SymfonyFinder;
 
 final class Finder
 {
+    private SymfonyFinder $finder;
+
     public const SEARCH_FOLDERS = '{src,vendor/bakabot}';
 
-    /**
-     * @return Component[]
-     * @throws ReflectionException
-     */
-    public static function getInstances(SymfonyFinder $finder): array
+    public function __construct(SymfonyFinder $finder = null)
     {
-        $iterator = new ClassIterator($finder);
+        if ($finder === null) {
+            $finder = new SymfonyFinder();
+            $finder->in(self::SEARCH_FOLDERS);
+        }
+
+        $this->finder = $finder;
+    }
+
+    public function collect(): Components
+    {
+        $iterator = new ClassIterator($this->finder);
         $iterator->enableAutoloading();
 
-        $components = [];
+        $components = new Components();
 
-        /** @var ReflectionClass $class */
+        /** @var ReflectionClass<Component> $class */
         foreach ($iterator->type(Component::class) as $class) {
             if ($class->isInstantiable() === false) {
                 continue;
             }
 
-            /** @var Component $component */
-            $component = $class->newInstance();
-
-            $components[] = $component;
+            $components->add($class->newInstance());
         }
 
         return $components;

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Bakabot\Component\Documentation;
 
 use Bakabot\Component\AppComponent;
+use Bakabot\Component\Components;
 use Bakabot\Component\DependencyDummy;
 use Bakabot\Component\DependentDummy;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +18,7 @@ class MarkdownRendererTest extends TestCase
         $component = new DependencyDummy();
 
         $rawParameters = Parser::parseParameters($component);
-        $renderedParameters = MarkdownRenderer::renderParameters([$component]);
+        $renderedParameters = MarkdownRenderer::renderParameters(new Components($component));
 
         foreach ($rawParameters as $parameter) {
             self::assertStringContainsString($parameter->name, $renderedParameters);
@@ -35,7 +36,7 @@ class MarkdownRendererTest extends TestCase
             Parser::parseParameters(new DependentDummy()),
             Parser::parseParameters($appComponent)
         ];
-        $renderedParameters = MarkdownRenderer::renderParameters([$appComponent], true);
+        $renderedParameters = MarkdownRenderer::renderParameters(new Components($appComponent));
 
         foreach ($rawParameterSets as $parameterSet) {
             foreach ($parameterSet as $parameter) {
@@ -51,7 +52,7 @@ class MarkdownRendererTest extends TestCase
         $component = new DependencyDummy();
 
         $rawServices = Parser::parseServices($component);
-        $renderedServices = MarkdownRenderer::renderServices([$component]);
+        $renderedServices = MarkdownRenderer::renderServices(new Components($component));
 
         foreach ($rawServices as $service) {
             self::assertStringContainsString($service->type, $renderedServices);
@@ -68,7 +69,7 @@ class MarkdownRendererTest extends TestCase
             Parser::parseServices(new DependentDummy()),
             Parser::parseServices($appComponent)
         ];
-        $renderedServices = MarkdownRenderer::renderServices([$appComponent], true);
+        $renderedServices = MarkdownRenderer::renderServices(new Components($appComponent));
 
         foreach ($rawServiceSets as $serviceSet) {
             foreach ($serviceSet as $service) {

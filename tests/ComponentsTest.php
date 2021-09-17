@@ -6,24 +6,24 @@ namespace Bakabot\Component;
 
 use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase
+class ComponentsTest extends TestCase
 {
     /** @test */
     public function fresh_collection_contains_core_component(): void
     {
-        $collection = new Collection();
+        $components = new Components();
 
-        self::assertSame(1, iterator_count($collection));
+        self::assertTrue($components->has(CoreComponent::class));
     }
 
     /** @test */
     public function instantiating_with_basic_component_returns_it_during_iteration(): void
     {
         $component = new DependencyDummy();
-        $components = [new CoreComponent(), $component];
-        $collection = new Collection($components);
+        $components = new Components($component);
 
-        self::assertEquals($components, iterator_to_array($collection));
+        self::assertTrue($components->has(CoreComponent::class));
+        self::assertTrue($components->has($component));
     }
 
     /** @test */
@@ -31,10 +31,11 @@ class CollectionTest extends TestCase
     {
         $component = new DependencyDummy();
 
-        $collection = new Collection();
-        $collection->push($component);
+        $components = new Components();
+        $components->add($component);
 
-        self::assertEquals([new CoreComponent(), $component], iterator_to_array($collection));
+        self::assertTrue($components->has(CoreComponent::class));
+        self::assertTrue($components->has($component));
     }
 
     /** @test */
@@ -42,9 +43,9 @@ class CollectionTest extends TestCase
     {
         $component = new DependencyDummy();
 
-        $collection = new Collection();
-        $collection->push($component);
-        $collection->push($component);
+        $collection = new Components();
+        $collection->add($component);
+        $collection->add($component);
 
         self::assertEquals([new CoreComponent(), $component], iterator_to_array($collection));
     }
@@ -55,8 +56,8 @@ class CollectionTest extends TestCase
         $dependency = new DependencyDummy();
         $dependent = new DependentDummy();
 
-        $collection = new Collection();
-        $collection->push($dependent);
+        $collection = new Components();
+        $collection->add($dependent);
 
         self::assertEquals([new CoreComponent(), $dependency, $dependent], iterator_to_array($collection));
     }

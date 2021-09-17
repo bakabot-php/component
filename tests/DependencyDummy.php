@@ -17,7 +17,7 @@ use function DI\get;
 #[RegistersService(stdClass::class)]
 class DependencyDummy extends AbstractComponent
 {
-    protected function getParameters(): array
+    protected function parameters(): array
     {
         return [
             'base_dir' => env('APP_DIR'),
@@ -29,7 +29,7 @@ class DependencyDummy extends AbstractComponent
         ];
     }
 
-    protected function getServices(): array
+    protected function services(): array
     {
         return [
             'logger' => get(LoggerInterface::class),

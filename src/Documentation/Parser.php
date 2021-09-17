@@ -8,16 +8,14 @@ use Bakabot\Component\Attribute\RegistersParameter;
 use Bakabot\Component\Attribute\RegistersService;
 use Bakabot\Component\Component;
 use ReflectionClass;
-use ReflectionException;
 
 final class Parser
 {
     /**
-     * @param class-string<Component>|Component $component
+     * @param Component $component
      * @return RegistersParameter[]
-     * @throws ReflectionException
      */
-    public static function parseParameters(string|Component $component): array
+    public static function parseParameters(Component $component): array
     {
         $attributes = (new ReflectionClass($component))->getAttributes(RegistersParameter::class);
 
@@ -30,11 +28,10 @@ final class Parser
     }
 
     /**
-     * @param class-string<Component>|Component $component
+     * @param Component $component
      * @return RegistersService[]
-     * @throws ReflectionException
      */
-    public static function parseServices(string|Component $component): array
+    public static function parseServices(Component $component): array
     {
         $attributes = (new ReflectionClass($component))->getAttributes(RegistersService::class);
 

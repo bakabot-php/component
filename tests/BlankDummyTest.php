@@ -6,7 +6,7 @@ namespace Bakabot\Component;
 
 class BlankDummyTest extends ComponentTestCase
 {
-    protected function getComponent(): Component
+    protected function component(): Component
     {
         return new BlankDummy();
     }

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component\Command;
 
+use Bakabot\Component\Components;
 use Bakabot\Component\Component;
 use Bakabot\Component\Documentation\MarkdownRenderer;
 use Bakabot\Component\Finder as ComponentFinder;
@@ -67,17 +68,10 @@ final class UpdateReadme extends Command
         ;
     }
 
-    /**
-     * @param string $distFile
-     * @param string $outFile
-     * @param Component[] $components
-     * @param bool $recursive
-     * @param bool $dryRun
-     */
     private function updateReadme(
+        Components $components,
         string $distFile,
         string $outFile,
-        array $components,
         bool $recursive,
         bool $dryRun
     ): void {
@@ -87,13 +81,12 @@ final class UpdateReadme extends Command
             throw new InvalidArgumentException(sprintf('Dist file [%s] does not exist.', $distFile));
         }
 
-        $distContents = file_get_contents($distFile);
-
         $placeholderMap = [
-            'parameters' => [MarkdownRenderer::class, 'renderParameters'],
-            'services' => [MarkdownRenderer::class, 'renderServices'],
+            'parameters' => [MarkdownRenderer::class, 'renderParameters'], // MarkdownRenderer::renderParameters(...)
+            'services' => [MarkdownRenderer::class, 'renderServices'], // MarkdownRenderer::renderServices(...)
         ];
 
+        $distContents = file_get_contents($distFile);
         foreach ($placeholderMap as $placeholder => $renderer) {
             $placeholder = "{{ $placeholder }}";
 
@@ -150,8 +143,8 @@ final class UpdateReadme extends Command
         $finder->in($baseDir . '/' . $searchFolders);
 
         try {
-            $components = ComponentFinder::getInstances($finder);
-            $this->updateReadme($distFile, $outFile, $components, $recursive, $dryRun);
+            $components = (new ComponentFinder($finder))->collect();
+            $this->updateReadme($components, $distFile, $outFile, $recursive, $dryRun);
         } catch (Throwable $ex) {
             $output->writeln('<error>' . $ex->getMessage() . ' Exiting...</error>');
             return 1;

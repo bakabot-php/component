@@ -9,7 +9,7 @@ use stdClass;
 
 class DependencyDummyTest extends ComponentTestCase
 {
-    protected function getComponent(): Component
+    protected function component(): Component
     {
         return new DependencyDummy();
     }
@@ -17,11 +17,11 @@ class DependencyDummyTest extends ComponentTestCase
     /** @test */
     public function registers_services_and_parameters(): void
     {
-        $container = $this->getContainer();
+        $container = $this->container();
 
-        self::assertSame($container->get('debug'), $this->getAppDebug());
-        self::assertSame($container->get('base_dir'), $this->getAppDir());
-        self::assertSame($container->get('env'), $this->getAppEnvironment());
+        self::assertSame($container->get('debug'), $this->hasDebugFlag());
+        self::assertSame($container->get('base_dir'), $this->appDir());
+        self::assertSame($container->get('env'), $this->appEnvironment());
         self::assertTrue($container->has('name'));
         self::assertTrue($container->has(LoggerInterface::class));
         self::assertTrue($container->has(stdClass::class));

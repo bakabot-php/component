@@ -9,5 +9,5 @@ interface DependentComponent
     /**
      * @return array<int, class-string<Component>>
      */
-    public function getDependencies(): array;
+    public function dependencies(): array;
 }
