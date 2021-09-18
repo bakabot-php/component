@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Bakabot\Component\Command;
 
 use Bakabot\Component\Components;
-use Bakabot\Component\Component;
 use Bakabot\Component\Documentation\MarkdownRenderer;
 use Bakabot\Component\Finder as ComponentFinder;
 use InvalidArgumentException;

@@ -12,7 +12,6 @@ use ReflectionClass;
 final class Parser
 {
     /**
-     * @param Component $component
      * @return RegistersParameter[]
      */
     public static function parseParameters(Component $component): array
@@ -28,7 +27,6 @@ final class Parser
     }
 
     /**
-     * @param Component $component
      * @return RegistersService[]
      */
     public static function parseServices(Component $component): array
