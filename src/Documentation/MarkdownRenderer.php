@@ -41,7 +41,7 @@ final class MarkdownRenderer
 
     private static function renderDefault(RegistersParameter $parameter): string
     {
-        if ($parameter->hasDefaultValue() === false) {
+        if (!$parameter->hasDefaultValue()) {
             return '*none*';
         }
 
