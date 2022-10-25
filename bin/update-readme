@@ -3,7 +3,7 @@
 
 declare(strict_types = 1);
 
-use Nayleen\Component\Command\UpdateReadme;
+use Bakabot\Component\Command\UpdateReadme;
 use Symfony\Component\Console\Application;
 
 $possibleAutoloaderLocations = [
