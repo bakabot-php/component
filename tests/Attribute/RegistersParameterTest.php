@@ -16,7 +16,7 @@ class RegistersParameterTest extends TestCase
         $asArray = [
             'name' => $attr->name,
             'type' => $attr->type,
-            'default_value' => $attr->defaultValue,
+            'default' => $attr->default,
             'description' => $attr->description,
         ];
 

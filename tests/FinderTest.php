@@ -13,10 +13,9 @@ class FinderTest extends TestCase
     public function returns_empty_collection_in_invalid_dir(): void
     {
         $componentFinder = new Finder();
-
         $components = $componentFinder->collect();
 
-        self::assertCount(1, $components);
+        self::assertCount(0, $components);
     }
 
     /** @test */

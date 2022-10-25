@@ -17,7 +17,7 @@ class MarkdownRendererTest extends TestCase
     {
         $component = new DependencyDummy();
 
-        $rawParameters = Parser::parseParameters($component);
+        $rawParameters = Parser::parameters($component);
         $renderedParameters = MarkdownRenderer::renderParameters(new Components($component));
 
         foreach ($rawParameters as $parameter) {
@@ -32,9 +32,9 @@ class MarkdownRendererTest extends TestCase
         $appComponent = new AppComponent();
 
         $rawParameterSets = [
-            Parser::parseParameters(new DependencyDummy()),
-            Parser::parseParameters(new DependentDummy()),
-            Parser::parseParameters($appComponent)
+            Parser::parameters(new DependencyDummy()),
+            Parser::parameters(new DependentDummy()),
+            Parser::parameters($appComponent)
         ];
         $renderedParameters = MarkdownRenderer::renderParameters(new Components($appComponent));
 
@@ -51,7 +51,7 @@ class MarkdownRendererTest extends TestCase
     {
         $component = new DependencyDummy();
 
-        $rawServices = Parser::parseServices($component);
+        $rawServices = Parser::services($component);
         $renderedServices = MarkdownRenderer::renderServices(new Components($component));
 
         foreach ($rawServices as $service) {
@@ -65,9 +65,9 @@ class MarkdownRendererTest extends TestCase
         $appComponent = new AppComponent();
 
         $rawServiceSets = [
-            Parser::parseServices(new DependencyDummy()),
-            Parser::parseServices(new DependentDummy()),
-            Parser::parseServices($appComponent)
+            Parser::services(new DependencyDummy()),
+            Parser::services(new DependentDummy()),
+            Parser::services($appComponent)
         ];
         $renderedServices = MarkdownRenderer::renderServices(new Components($appComponent));
 

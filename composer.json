@@ -3,31 +3,19 @@
     "description": "Provides the base classes and interfaces for Bakabot components.",
     "license": "MIT",
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.1",
         "acclimate/container": "^2",
-        "hanneskod/classtools": "^1.2",
-        "maddhatter/markdown-table": "^1.0",
-        "php-di/php-di": "^6"
+        "maddhatter/markdown-table": "^1",
+        "nikic/php-parser": "^4",
+        "php-di/php-di": "^6",
+        "symfony/finder": "^6"
     },
     "require-dev": {
-        "bakabot/component-core": "dev-main",
-        "bakabot/development": "^2.0",
+        "nayleen/development": "dev-main",
         "roave/security-advisories": "dev-latest"
     },
     "suggest": {
         "php-di/php-di": "Recommended default container"
-    },
-    "config": {
-        "lock": false,
-        "preferred-install": {
-            "*": "dist"
-        },
-        "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-main": "1.0.x-dev"
-        }
     },
     "autoload": {
         "psr-4": {
@@ -41,5 +29,20 @@
     },
     "bin": [
         "bin/update-readme"
-    ]
+    ],
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
+        "lock": false,
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "2.0.x-dev"
+        }
+    }
 }

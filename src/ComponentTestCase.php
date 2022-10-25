@@ -77,7 +77,7 @@ abstract class ComponentTestCase extends TestCase
     public function registers_annotated_parameters(): void
     {
         $component = $this->component();
-        $parameters = Parser::parseParameters($component);
+        $parameters = Parser::parameters($component);
 
         if ($parameters === []) {
             /** @psalm-suppress InternalMethod */
@@ -105,7 +105,7 @@ abstract class ComponentTestCase extends TestCase
     public function registers_annotated_services(): void
     {
         $component = $this->component();
-        $services = Parser::parseServices($component);
+        $services = Parser::services($component);
 
         if ($services === []) {
             /** @psalm-suppress InternalMethod */

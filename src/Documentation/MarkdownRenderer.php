@@ -13,9 +13,14 @@ use ReflectionException;
 
 final class MarkdownRenderer
 {
-    /** @var string[] */
+    /**
+     * @var string[]
+     */
     public const PARAMETER_HEADERS = ['Name', 'Type', 'Default Value', 'Description'];
-    /** @var string[] */
+
+    /**
+     * @var string[]
+     */
     public const SERVICE_HEADERS = ['Name', 'Description'];
 
     private static function backtick(string $text): string
@@ -41,16 +46,16 @@ final class MarkdownRenderer
 
     private static function renderDefault(RegistersParameter $parameter): string
     {
-        if (!$parameter->hasDefaultValue()) {
+        if (!$parameter->hasDefault()) {
             return '*none*';
         }
 
         // insert raw expressions directly
-        if (is_string($parameter->defaultValue) && str_starts_with($parameter->defaultValue, 'e:')) {
-            return substr($parameter->defaultValue, 2);
+        if (is_string($parameter->default) && str_starts_with($parameter->default, 'e:')) {
+            return substr($parameter->default, 2);
         }
 
-        $asString = var_export($parameter->defaultValue, true);
+        $asString = var_export($parameter->default, true);
         $asString = stripslashes($asString);
 
         return str_replace("'", '"', $asString);
@@ -80,7 +85,7 @@ final class MarkdownRenderer
 
         $rows = [];
         foreach ($components as $component) {
-            foreach (Parser::parseParameters($component) as $parameter) {
+            foreach (Parser::parameters($component) as $parameter) {
                 $name = $parameter->name;
 
                 $rows[$name] = [
@@ -105,7 +110,7 @@ final class MarkdownRenderer
 
         $rows = [];
         foreach ($components as $component) {
-            foreach (Parser::parseServices($component) as $service) {
+            foreach (Parser::services($component) as $service) {
                 $rows[$service->name] = [
                     self::renderService($service),
                     $service->description

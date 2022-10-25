@@ -14,7 +14,7 @@ final class Parser
     /**
      * @return RegistersParameter[]
      */
-    public static function parseParameters(Component $component): array
+    public static function parameters(Component $component): array
     {
         $attributes = (new ReflectionClass($component))->getAttributes(RegistersParameter::class);
 
@@ -29,7 +29,7 @@ final class Parser
     /**
      * @return RegistersService[]
      */
-    public static function parseServices(Component $component): array
+    public static function services(Component $component): array
     {
         $attributes = (new ReflectionClass($component))->getAttributes(RegistersService::class);
 

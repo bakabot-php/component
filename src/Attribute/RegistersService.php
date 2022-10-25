@@ -10,13 +10,14 @@ use Psr\Container\ContainerInterface;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class RegistersService
 {
-    public /*readonly*/ string $description;
-    /** @var class-string|string */
-    public /*readonly*/ string $name;
-    /** @var class-string */
-    public /*readonly*/ string $type;
+    /**
+     * @var class-string
+     */
+    public readonly string $type;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public const DEFAULT_DESCRIPTION = 'No description available.';
 
     /**
@@ -25,13 +26,10 @@ final class RegistersService
      * @param class-string|null $type
      */
     public function __construct(
-        string $name,
-        string $description = self::DEFAULT_DESCRIPTION,
+        public readonly string $name,
+        public readonly string $description = self::DEFAULT_DESCRIPTION,
         ?string $type = null
     ) {
-        $this->description = $description;
-        $this->name = $name;
-
         if ($type === null) {
             assert(interface_exists($name) || class_exists($name));
             $type = $name;

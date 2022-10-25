@@ -2,12 +2,17 @@ version: "2"
 
 services:
     composer:
-        image: bakabot/php-dev
+        image: composer:latest
         entrypoint: composer
+        environment:
+            - COMPOSER_HOME=/composer
         volumes:
+            - $HOME/.config/composer:/composer
             - $PWD:/app
+        working_dir: /app
 
     php:
-        image: bakabot/php-dev
+        image: php:8.1-cli
         volumes:
             - $PWD:/app
+        working_dir: /app

@@ -9,20 +9,11 @@ use PHPUnit\Framework\TestCase;
 class ComponentsTest extends TestCase
 {
     /** @test */
-    public function fresh_collection_contains_core_component(): void
-    {
-        $components = new Components();
-
-        self::assertTrue($components->has(CoreComponent::class));
-    }
-
-    /** @test */
     public function instantiating_with_basic_component_returns_it_during_iteration(): void
     {
         $component = new DependencyDummy();
         $components = new Components($component);
 
-        self::assertTrue($components->has(CoreComponent::class));
         self::assertTrue($components->has($component));
     }
 
@@ -34,7 +25,6 @@ class ComponentsTest extends TestCase
         $components = new Components();
         $components->add($component);
 
-        self::assertTrue($components->has(CoreComponent::class));
         self::assertTrue($components->has($component));
     }
 
@@ -47,7 +37,7 @@ class ComponentsTest extends TestCase
         $collection->add($component);
         $collection->add($component);
 
-        self::assertEquals([new CoreComponent(), $component], iterator_to_array($collection));
+        self::assertEquals([$component], iterator_to_array($collection));
     }
 
     /** @test */
@@ -59,6 +49,6 @@ class ComponentsTest extends TestCase
         $collection = new Components();
         $collection->add($dependent);
 
-        self::assertEquals([new CoreComponent(), $dependency, $dependent], iterator_to_array($collection));
+        self::assertEquals([$dependency, $dependent], iterator_to_array($collection));
     }
 }

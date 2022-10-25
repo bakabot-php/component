@@ -16,19 +16,14 @@ final class Components implements Countable, IteratorAggregate
 
     public function __construct(Component ...$components)
     {
-        $this->add(new CoreComponent());
-
         foreach ($components as $component) {
             $this->add($component);
         }
     }
 
-    private function registerDependencies(Component $component): void
+    private function register(Component $component): void
     {
-        if (
-            !($component instanceof DependentComponent)
-            || ($component instanceof CoreComponent)
-        ) {
+        if (!($component instanceof DependentComponent)) {
             return;
         }
 
@@ -43,7 +38,7 @@ final class Components implements Countable, IteratorAggregate
             return;
         }
 
-        $this->registerDependencies($component);
+        $this->register($component);
         $this->components[(string) $component] = $component;
     }
 

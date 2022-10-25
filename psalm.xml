@@ -7,14 +7,16 @@
     cacheDirectory="/tmp/psalm"
 >
     <projectFiles>
-        <directory name="src" />
+        <directory name="src"/>
 
         <ignoreFiles>
-            <directory name="vendor" />
+            <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
 
     <plugins>
+        <pluginClass class="HectorJ\SafePHPPsalmPlugin\Plugin" />
         <pluginClass class="Lctrs\PsalmPsrContainerPlugin\Plugin" />
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin" />
     </plugins>
 </psalm>

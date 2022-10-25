@@ -18,18 +18,13 @@ use Throwable;
 
 final class UpdateReadme extends Command
 {
-    private ?string $baseDir;
-
     public const NAME = 'update-readme';
     public const OPT_BASE_DIR = 'base-dir';
     public const OPT_DRY_RUN = 'dry-run';
-    public const OPT_RECURSIVE = 'recursive';
     public const OPT_SEARCH_FOLDERS = 'search-folders';
 
-    public function __construct(?string $baseDir = null)
+    public function __construct(private readonly ?string $baseDir = null)
     {
-        $this->baseDir = $baseDir;
-
         parent::__construct();
     }
 
@@ -51,13 +46,6 @@ final class UpdateReadme extends Command
                 'Validate that the README file is up-to-date'
             )
             ->addOption(
-                self::OPT_RECURSIVE,
-                null,
-                InputOption::VALUE_NEGATABLE,
-                'Update readme with parameters and services in *all* components',
-                true
-            )
-            ->addOption(
                 self::OPT_SEARCH_FOLDERS,
                 null,
                 InputOption::VALUE_REQUIRED,
@@ -71,7 +59,6 @@ final class UpdateReadme extends Command
         Components $components,
         string $distFile,
         string $outFile,
-        bool $recursive,
         bool $dryRun
     ): void {
         clearstatcache();
@@ -81,8 +68,8 @@ final class UpdateReadme extends Command
         }
 
         $placeholderMap = [
-            'parameters' => [MarkdownRenderer::class, 'renderParameters'], // MarkdownRenderer::renderParameters(...)
-            'services' => [MarkdownRenderer::class, 'renderServices'], // MarkdownRenderer::renderServices(...)
+            'parameters' => MarkdownRenderer::renderParameters(...),
+            'services' => MarkdownRenderer::renderServices(...),
         ];
 
         $distContents = file_get_contents($distFile);
@@ -90,7 +77,7 @@ final class UpdateReadme extends Command
             $placeholder = "{{ $placeholder }}";
 
             /** @var string $section */
-            $section = $renderer($components, $recursive);
+            $section = $renderer($components);
             $distContents = str_replace($placeholder, $section, $distContents);
         }
 
@@ -132,7 +119,6 @@ final class UpdateReadme extends Command
         $baseDir = rtrim($baseDir, "\\/");
         $distFile = $baseDir . '/README.md.dist';
         $dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
-        $recursive = (bool) $input->getOption(self::OPT_RECURSIVE);
         $outFile = $baseDir . '/README.md';
 
         $finder = new Finder();
@@ -143,7 +129,7 @@ final class UpdateReadme extends Command
 
         try {
             $components = (new ComponentFinder($finder))->collect();
-            $this->updateReadme($components, $distFile, $outFile, $recursive, $dryRun);
+            $this->updateReadme($components, $distFile, $outFile, $dryRun);
         } catch (Throwable $ex) {
             $output->writeln('<error>' . $ex->getMessage() . ' Exiting...</error>');
             return 1;
