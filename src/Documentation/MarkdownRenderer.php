@@ -35,11 +35,11 @@ final class MarkdownRenderer
      */
     private static function label(string $name, string $type): string
     {
-        $r = new ReflectionClass($type);
+        $reflection = new ReflectionClass($type);
 
         return match (true) {
-            class_exists($name) && $r->isInterface() => 'provides: ',
-            $r->isInterface() => 'is: ',
+            class_exists($name) && $reflection->isInterface() => 'provides: ',
+            $reflection->isInterface() => 'is: ',
             default => '',
         };
     }
