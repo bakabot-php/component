@@ -22,13 +22,12 @@ final class RegistersService
 
     /**
      * @param class-string|string $name
-     * @param string $description
-     * @param class-string|null $type
+     * @param null|class-string $type
      */
     public function __construct(
         public readonly string $name,
         public readonly string $description = self::DEFAULT_DESCRIPTION,
-        ?string $type = null
+        ?string $type = null,
     ) {
         if ($type === null) {
             assert(interface_exists($name) || class_exists($name));

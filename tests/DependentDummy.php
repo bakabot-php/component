@@ -6,20 +6,21 @@ namespace Bakabot\Component;
 
 use Bakabot\Component\Attribute\RegistersParameter;
 use Bakabot\Component\Attribute\RegistersService;
-use Psr\Container\ContainerInterface;
-use stdClass;
+
 use function DI\decorate;
+
+use Psr\Container\ContainerInterface;
+
+use stdClass;
 
 #[RegistersParameter('greeting', 'string', 'Hello World')]
 #[RegistersService(stdClass::class, 'Adds a test flag to the instance', stdClass::class)]
-class DependentDummy extends AbstractComponent implements DependentComponent
+final class DependentDummy extends AbstractComponent implements DependentComponent
 {
     protected function parameters(): array
     {
         return [
-            'greeting' => static function (ContainerInterface $container) {
-                return sprintf('Hello %s', $container->get('name'));
-            }
+            'greeting' => static fn (ContainerInterface $container) => sprintf('Hello %s', $container->get('name')),
         ];
     }
 

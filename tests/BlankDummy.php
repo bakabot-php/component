@@ -7,7 +7,7 @@ namespace Bakabot\Component;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 
-class BlankDummy implements Component
+final class BlankDummy implements Component
 {
     public function __construct()
     {

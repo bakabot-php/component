@@ -23,14 +23,61 @@ final class MarkdownRenderer
      */
     public const SERVICE_HEADERS = ['Name', 'Description'];
 
+    public static function renderParameters(Components $components): string
+    {
+        $table = new Table();
+        $table->headers(self::PARAMETER_HEADERS);
+
+        $rows = [];
+        foreach ($components as $component) {
+            foreach (Parser::parameters($component) as $parameter) {
+                $name = $parameter->name;
+
+                $rows[$name] = [
+                    self::backtick($name),
+                    self::backtick($parameter->type),
+                    self::backtick(self::renderDefault($parameter)),
+                    $parameter->description,
+                ];
+            }
+        }
+        ksort($rows, SORT_NATURAL);
+
+        $table->rows(array_values($rows));
+
+        return $table->render();
+    }
+
+    public static function renderServices(Components $components): string
+    {
+        $table = new Table();
+        $table->headers(self::SERVICE_HEADERS);
+
+        $rows = [];
+        foreach ($components as $component) {
+            foreach (Parser::services($component) as $service) {
+                $rows[$service->name] = [
+                    self::renderService($service),
+                    $service->description,
+                ];
+            }
+        }
+        ksort($rows, SORT_NATURAL);
+
+        $table->rows(array_values($rows));
+
+        return $table->render();
+    }
+
     private static function backtick(string $text): string
     {
-        return "`$text`";
+        return "`{$text}`";
     }
 
     /**
      * @param class-string|string $name
      * @param class-string $type
+     *
      * @throws ReflectionException
      */
     private static function label(string $name, string $type): string
@@ -74,53 +121,7 @@ final class MarkdownRenderer
             '%s (%s%s)',
             class_exists($name) ? self::backtick($name) : '"' . $name . '"',
             self::label($name, $type),
-            self::backtick($type)
+            self::backtick($type),
         );
-    }
-
-    public static function renderParameters(Components $components): string
-    {
-        $table = new Table();
-        $table->headers(self::PARAMETER_HEADERS);
-
-        $rows = [];
-        foreach ($components as $component) {
-            foreach (Parser::parameters($component) as $parameter) {
-                $name = $parameter->name;
-
-                $rows[$name] = [
-                    self::backtick($name),
-                    self::backtick($parameter->type),
-                    self::backtick(self::renderDefault($parameter)),
-                    $parameter->description
-                ];
-            }
-        }
-        ksort($rows, SORT_NATURAL);
-
-        $table->rows(array_values($rows));
-
-        return $table->render();
-    }
-
-    public static function renderServices(Components $components): string
-    {
-        $table = new Table();
-        $table->headers(self::SERVICE_HEADERS);
-
-        $rows = [];
-        foreach ($components as $component) {
-            foreach (Parser::services($component) as $service) {
-                $rows[$service->name] = [
-                    self::renderService($service),
-                    $service->description
-                ];
-            }
-        }
-        ksort($rows, SORT_NATURAL);
-
-        $table->rows(array_values($rows));
-
-        return $table->render();
     }
 }

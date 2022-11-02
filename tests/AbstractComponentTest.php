@@ -7,14 +7,19 @@ namespace Bakabot\Component;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class AbstractComponentTest extends TestCase
+/**
+ * @internal
+ */
+final class AbstractComponentTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function ffs_give_me_my_coverage(): void
     {
-        $component = new class extends AbstractComponent
-        {
+        $component = new class() extends AbstractComponent {
             private bool $wasBooted = false;
+
             private bool $wasShutdown = false;
 
             protected function parameters(): array

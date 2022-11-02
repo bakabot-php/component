@@ -7,14 +7,19 @@ namespace Bakabot\Component;
 use Psr\Log\LoggerInterface;
 use stdClass;
 
-class DependencyDummyTest extends ComponentTestCase
+/**
+ * @internal
+ */
+final class DependencyDummyTest extends ComponentTestCase
 {
     protected function component(): Component
     {
         return new DependencyDummy();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function registers_services_and_parameters(): void
     {
         $container = $this->container();

@@ -5,21 +5,23 @@ declare(strict_types = 1);
 namespace Bakabot\Component;
 
 use Generator;
-use PhpParser\Error as ParseError;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_ as ClassDefinition;
 use PhpParser\Node\Stmt\Namespace_ as NamespaceDeclaration;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use ReflectionClass;
-use ReflectionException;
 use Symfony\Component\Finder\Finder as SymfonyFinder;
 
 final class Finder
 {
     private SymfonyFinder $finder;
+
     private Parser $parser;
 
+    /**
+     * @var string
+     */
     public const SEARCH_FOLDERS = '{src,vendor/bakabot}';
 
     public function __construct(?SymfonyFinder $finder = null, ?Parser $parser = null)
@@ -45,12 +47,7 @@ final class Finder
     private function find(): Generator
     {
         foreach ($this->finder as $fileInfo) {
-            try {
-                $statements = $this->parser->parse($fileInfo->getContents());
-            } catch (ParseError) {
-                // ignore unparsable files
-                continue;
-            }
+            $statements = $this->parser->parse($fileInfo->getContents());
 
             if (!$statements) {
                 // ignore empty files
@@ -65,7 +62,6 @@ final class Finder
 
     /**
      * @param Stmt[] $statements
-     * @return Component|null
      */
     private function reflect(array $statements, string $namespace = ''): ?Component
     {
@@ -78,27 +74,23 @@ final class Finder
                 $class = (string) $stmt->name;
 
                 if ($namespace !== '') {
-                    $class = sprintf("%s\\%s", $namespace, $class);
+                    $class = sprintf('%s\\%s', $namespace, $class);
                 }
 
-                try {
-                    /** @var class-string $class */
-                    $reflection = new ReflectionClass($class);
+                /** @var class-string $class */
+                $reflection = new ReflectionClass($class);
 
-                    if (
-                        !$reflection->implementsInterface(Component::class)
-                        || !$reflection->isInstantiable()
-                    ) {
-                        continue;
-                    }
-
-                    $component = $reflection->newInstance();
-                    assert($component instanceof Component);
-
-                    return $component;
-                } catch (ReflectionException) {
+                if (
+                    !$reflection->implementsInterface(Component::class)
+                    || !$reflection->isInstantiable()
+                ) {
                     continue;
                 }
+
+                $component = $reflection->newInstance();
+                assert($component instanceof Component);
+
+                return $component;
             }
         }
 

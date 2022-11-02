@@ -11,7 +11,9 @@ use Traversable;
 
 final class Components implements Countable, IteratorAggregate
 {
-    /** @var Component[] */
+    /**
+     * @var Component[]
+     */
     private array $components = [];
 
     public function __construct(Component ...$components)
@@ -23,7 +25,7 @@ final class Components implements Countable, IteratorAggregate
 
     private function register(Component $component): void
     {
-        if (!($component instanceof DependentComponent)) {
+        if (!$component instanceof DependentComponent) {
             return;
         }
 
@@ -56,8 +58,7 @@ final class Components implements Countable, IteratorAggregate
     }
 
     /**
-     * @param Component|class-string<Component> $component
-     * @return bool
+     * @param class-string<Component>|Component $component
      */
     public function has(string|Component $component): bool
     {

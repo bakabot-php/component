@@ -4,7 +4,10 @@ declare(strict_types = 1);
 
 namespace Bakabot\Component;
 
-class BlankDummyTest extends ComponentTestCase
+/**
+ * @internal
+ */
+final class BlankDummyTest extends ComponentTestCase
 {
     protected function component(): Component
     {

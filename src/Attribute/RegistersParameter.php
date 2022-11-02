@@ -24,9 +24,8 @@ final class RegistersParameter
         public readonly string $name,
         public readonly string $type,
         public readonly mixed $default = self::DEFAULT_EMPTY_VALUE,
-        public readonly string $description = self::DEFAULT_DESCRIPTION
+        public readonly string $description = self::DEFAULT_DESCRIPTION,
     ) {
-
     }
 
     public function hasDefault(): bool

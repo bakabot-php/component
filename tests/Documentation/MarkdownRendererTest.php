@@ -10,9 +10,14 @@ use Bakabot\Component\DependencyDummy;
 use Bakabot\Component\DependentDummy;
 use PHPUnit\Framework\TestCase;
 
-class MarkdownRendererTest extends TestCase
+/**
+ * @internal
+ */
+final class MarkdownRendererTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function can_render_component_parameters(): void
     {
         $component = new DependencyDummy();
@@ -26,7 +31,9 @@ class MarkdownRendererTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function can_render_component_parameters_recursively(): void
     {
         $appComponent = new AppComponent();
@@ -34,7 +41,7 @@ class MarkdownRendererTest extends TestCase
         $rawParameterSets = [
             Parser::parameters(new DependencyDummy()),
             Parser::parameters(new DependentDummy()),
-            Parser::parameters($appComponent)
+            Parser::parameters($appComponent),
         ];
         $renderedParameters = MarkdownRenderer::renderParameters(new Components($appComponent));
 
@@ -46,7 +53,9 @@ class MarkdownRendererTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function can_render_component_services(): void
     {
         $component = new DependencyDummy();
@@ -59,7 +68,9 @@ class MarkdownRendererTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function can_render_component_services_recursively(): void
     {
         $appComponent = new AppComponent();
@@ -67,7 +78,7 @@ class MarkdownRendererTest extends TestCase
         $rawServiceSets = [
             Parser::services(new DependencyDummy()),
             Parser::services(new DependentDummy()),
-            Parser::services($appComponent)
+            Parser::services($appComponent),
         ];
         $renderedServices = MarkdownRenderer::renderServices(new Components($appComponent));
 

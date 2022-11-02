@@ -10,7 +10,10 @@ use org\bovigo\vfs\vfsStreamFile;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class UpdateReadmeTest extends TestCase
+/**
+ * @internal
+ */
+final class UpdateReadmeTest extends TestCase
 {
     private vfsStreamDirectory $vfs;
 
@@ -22,7 +25,7 @@ class UpdateReadmeTest extends TestCase
             'root',
             null,
             [
-                'README.md.dist' => <<<DIST
+                'README.md.dist' => <<<'DIST'
 {{ parameters }}
 
 {{ services }}
@@ -32,53 +35,13 @@ DIST,
                     'DependencyDummy.php' => file_get_contents(dirname(__DIR__) . '/DependencyDummy.php'),
                     'DependentDummy.php' => file_get_contents(dirname(__DIR__) . '/DependentDummy.php'),
                 ],
-            ]
+            ],
         );
     }
 
-    /** @test */
-    public function updates_readme_file(): void
-    {
-        $commandTester = new CommandTester(new UpdateReadme());
-        $exitCode = $commandTester->execute(
-            [
-                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
-                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
-            ]
-        );
-
-        self::assertSame(0, $exitCode);
-
-        /** @var vfsStreamFile $file */
-        $file = $this->vfs->getChild('README.md');
-
-        self::assertNotEmpty($file->getContent());
-        self::assertStringContainsString('heck', $file->getContent());
-    }
-
-    /** @test */
-    public function dry_run_returns_when_file_is_up_to_date(): void
-    {
-        $commandTester = new CommandTester(new UpdateReadme());
-        $commandTester->execute(
-            [
-                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
-                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
-            ]
-        );
-
-        $exitCode = $commandTester->execute(
-            [
-                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
-                '--' . UpdateReadme::OPT_DRY_RUN => true,
-                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
-            ]
-        );
-
-        self::assertSame(0, $exitCode);
-    }
-
-    /** @test */
+    /**
+     * @test
+     */
     public function dry_run_fails_when_out_file_does_not_exist(): void
     {
         $commandTester = new CommandTester(new UpdateReadme());
@@ -86,8 +49,8 @@ DIST,
             [
                 '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
                 '--' . UpdateReadme::OPT_DRY_RUN => true,
-                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
-            ]
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src',
+            ],
         );
 
         self::assertSame(1, $exitCode);
@@ -95,25 +58,33 @@ DIST,
         self::assertSame("README.md has not been updated before committing. Exiting...\n", $commandTester->getDisplay());
     }
 
-    /** @test */
-    public function fails_when_dist_file_does_not_exist(): void
+    /**
+     * @test
+     */
+    public function dry_run_returns_when_file_is_up_to_date(): void
     {
-        $this->vfs->removeChild('README.md.dist');
-
         $commandTester = new CommandTester(new UpdateReadme());
+        $commandTester->execute(
+            [
+                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src',
+            ],
+        );
+
         $exitCode = $commandTester->execute(
             [
                 '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
-                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
-            ]
+                '--' . UpdateReadme::OPT_DRY_RUN => true,
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src',
+            ],
         );
 
-        self::assertSame(1, $exitCode);
-        self::assertFalse($this->vfs->hasChild('README.md'));
-        self::assertSame("Dist file [vfs://root/README.md.dist] does not exist. Exiting...\n", $commandTester->getDisplay());
+        self::assertSame(0, $exitCode);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function fails_on_backup_error(): void
     {
         vfsStream::newFile('README.md')->at($this->vfs);
@@ -123,15 +94,17 @@ DIST,
         $exitCode = $commandTester->execute(
             [
                 '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
-                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
-            ]
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src',
+            ],
         );
 
         self::assertSame(1, $exitCode);
         self::assertSame("Unable to back up original output file. Exiting...\n", $commandTester->getDisplay());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function fails_on_write_error(): void
     {
         vfsStream::newFile('README.md', 0400)->at($this->vfs);
@@ -141,11 +114,53 @@ DIST,
         $exitCode = $commandTester->execute(
             [
                 '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
-                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src'
-            ]
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src',
+            ],
         );
 
         self::assertSame(1, $exitCode);
         self::assertSame("Unable to write to output file. Exiting...\n", $commandTester->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function fails_when_dist_file_does_not_exist(): void
+    {
+        $this->vfs->removeChild('README.md.dist');
+
+        $commandTester = new CommandTester(new UpdateReadme());
+        $exitCode = $commandTester->execute(
+            [
+                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src',
+            ],
+        );
+
+        self::assertSame(1, $exitCode);
+        self::assertFalse($this->vfs->hasChild('README.md'));
+        self::assertSame("Dist file [vfs://root/README.md.dist] does not exist. Exiting...\n", $commandTester->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function updates_readme_file(): void
+    {
+        $commandTester = new CommandTester(new UpdateReadme());
+        $exitCode = $commandTester->execute(
+            [
+                '--' . UpdateReadme::OPT_BASE_DIR => $this->vfs->url(),
+                '--' . UpdateReadme::OPT_SEARCH_FOLDERS => 'src',
+            ],
+        );
+
+        self::assertSame(0, $exitCode);
+
+        /** @var vfsStreamFile $file */
+        $file = $this->vfs->getChild('README.md');
+
+        self::assertNotEmpty($file->getContent());
+        self::assertStringContainsString('heck', $file->getContent());
     }
 }

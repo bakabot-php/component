@@ -6,9 +6,14 @@ namespace Bakabot\Component\Attribute;
 
 use PHPUnit\Framework\TestCase;
 
-class RegistersParameterTest extends TestCase
+/**
+ * @internal
+ */
+final class RegistersParameterTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function acts_as_dto(): void
     {
         $attr = new RegistersParameter('param', 'string');

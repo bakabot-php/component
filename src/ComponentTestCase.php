@@ -18,16 +18,6 @@ abstract class ComponentTestCase extends TestCase
         putenv('APP_ENV=test');
     }
 
-    final protected function assertContainerHasEntry(string $name, string $message = ''): void
-    {
-        self::assertTrue($this->container()->has($name), $message);
-    }
-
-    final protected function hasDebugFlag(): bool
-    {
-        return (bool) getenv('APP_DEBUG');
-    }
-
     final protected function appDir(): string
     {
         return getenv('APP_DIR') ?: '/tmp';
@@ -38,17 +28,25 @@ abstract class ComponentTestCase extends TestCase
         return getenv('APP_ENV') ?: 'test';
     }
 
+    final protected function assertContainerHasEntry(string $name, string $message = ''): void
+    {
+        self::assertTrue($this->container()->has($name), $message);
+    }
+
     abstract protected function component(): Component;
 
-    /** @return Component[] */
+    /**
+     * @return Component[]
+     */
     final protected function components(): array
     {
         $component = $this->component();
 
-        $components = ($component instanceof DependentComponent
+        $components = (
+            $component instanceof DependentComponent
             ? array_map(
-                static fn(string $component) => new $component(),
-                $component->dependencies()
+                static fn (string $component) => new $component(),
+                $component->dependencies(),
             )
             : []
         );
@@ -73,15 +71,23 @@ abstract class ComponentTestCase extends TestCase
         return $containerBuilder;
     }
 
-    /** @test */
+    final protected function hasDebugFlag(): bool
+    {
+        return (bool) getenv('APP_DEBUG');
+    }
+
+    /**
+     * @test
+     * @psalm-suppress InternalMethod
+     */
     public function registers_annotated_parameters(): void
     {
         $component = $this->component();
         $parameters = Parser::parameters($component);
 
         if ($parameters === []) {
-            /** @psalm-suppress InternalMethod */
             $this->addToAssertionCount(1);
+
             return;
         }
 
@@ -90,26 +96,29 @@ abstract class ComponentTestCase extends TestCase
         foreach ($parameters as $parameter) {
             $this->assertContainerHasEntry(
                 $parameter->name,
-                sprintf('[%s] is not registered in the container', $parameter->name)
+                sprintf('[%s] is not registered in the container', $parameter->name),
             );
 
             self::assertSame(
                 $parameter->type,
                 get_debug_type($parameter->resolve($container)),
-                sprintf('[%s] is not of the expected type %s', $parameter->name, $parameter->type)
+                sprintf('[%s] is not of the expected type %s', $parameter->name, $parameter->type),
             );
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     * @psalm-suppress InternalMethod
+     */
     public function registers_annotated_services(): void
     {
         $component = $this->component();
         $services = Parser::services($component);
 
         if ($services === []) {
-            /** @psalm-suppress InternalMethod */
             $this->addToAssertionCount(1);
+
             return;
         }
 
@@ -118,13 +127,13 @@ abstract class ComponentTestCase extends TestCase
         foreach ($services as $service) {
             $this->assertContainerHasEntry(
                 $service->type,
-                sprintf('[%s] is not registered in the container', $service->type)
+                sprintf('[%s] is not registered in the container', $service->type),
             );
 
-            /** @noinspection UnnecessaryAssertionInspection */
+            /* @noinspection UnnecessaryAssertionInspection */
             self::assertInstanceOf(
                 $service->type,
-                $service->resolve($container)
+                $service->resolve($container),
             );
         }
     }
